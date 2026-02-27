@@ -303,39 +303,86 @@
 <section id="gallery" class="section">
   <div class="container">
     <h2>Tournament Medalists Gallery</h2>
-    <div class="gallery-grid">
-      <figure class="gallery-item">
-        <img src="assets/tournament-photos/2025-11-22-nb.jpg" alt="Medalists from the 3.0 to 3.5 bracket, North Bethesda, November 22 2025">
-        <figcaption><strong>11/22/25</strong> &mdash; 3.0&ndash;3.5 (North Bethesda)</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="assets/tournament-photos/2025-11-29-nb.jpg" alt="Medalists from the 3.5 to 4.0 bracket, North Bethesda, November 29 2025">
-        <figcaption><strong>11/29/25</strong> &mdash; 3.5&ndash;4.0 (North Bethesda)</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="assets/tournament-photos/2025-11-30-rv.jpg" alt="Medalists from the 3.5 to 4.0 bracket, Rockville, November 30 2025">
-        <figcaption><strong>11/30/25</strong> &mdash; 3.5&ndash;4.0 (Rockville)</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="assets/tournament-photos/2025-12-07-rv.jpg" alt="Medalists from the 4.0 to 4.5 bracket, Rockville, December 7 2025">
-        <figcaption><strong>12/7/25</strong> &mdash; 4.0&ndash;4.5 (Rockville)</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="assets/tournament-photos/2025-12-20-nb.jpg" alt="Medalists from the 3.5 to 4.0 Mixed Gender bracket, North Bethesda, December 20 2025">
-        <figcaption><strong>12/20/25</strong> &mdash; 3.5&ndash;4.0 Mixed Gender (North Bethesda)</figcaption>
-      </figure>
-      <figure class="gallery-item">
-        <img src="assets/tournament-photos/2026-02-14-nb.jpg" alt="Medalists from the 3.5 to 4.0 bracket, North Bethesda, February 14 2026">
-        <figcaption>
-          <strong>2/14/26</strong> &mdash; 3.5&ndash;4.0 (North Bethesda)<br>
-          Gold: Stephen Britten &amp; Josh Skillman &middot;
-          Silver: Fan Yang &amp; Al Lin &middot;
-          Bronze: Lewis Bassford &amp; Ram Neupane
-        </figcaption>
-      </figure>
+    <div class="carousel" id="galleryCarousel">
+      <button class="carousel__arrow carousel__arrow--prev" aria-label="Previous photo">&#10094;</button>
+      <div class="carousel__track">
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/2025-11-22-nb.jpg" alt="Medalists from the 3.0 to 3.5 bracket, North Bethesda, November 22 2025">
+            <div class="carousel__overlay">
+              <strong>11/22/25</strong> &mdash; 3.0&ndash;3.5 (North Bethesda)
+            </div>
+          </div>
+          <div class="carousel__caption"></div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/2025-11-29-nb.jpg" alt="Medalists from the 3.5 to 4.0 bracket, North Bethesda, November 29 2025">
+            <div class="carousel__overlay">
+              <strong>11/29/25</strong> &mdash; 3.5&ndash;4.0 (North Bethesda)
+            </div>
+          </div>
+          <div class="carousel__caption"></div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/2025-11-30-rv.jpg" alt="Medalists from the 3.5 to 4.0 bracket, Rockville, November 30 2025">
+            <div class="carousel__overlay">
+              <strong>11/30/25</strong> &mdash; 3.5&ndash;4.0 (Rockville)
+            </div>
+          </div>
+          <div class="carousel__caption"></div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/2025-12-07-rv.jpg" alt="Medalists from the 4.0 to 4.5 bracket, Rockville, December 7 2025">
+            <div class="carousel__overlay">
+              <strong>12/7/25</strong> &mdash; 4.0&ndash;4.5 (Rockville)
+            </div>
+          </div>
+          <div class="carousel__caption"></div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/2025-12-20-nb.jpg" alt="Medalists from the 3.5 to 4.0 Mixed Gender bracket, North Bethesda, December 20 2025">
+            <div class="carousel__overlay">
+              <strong>12/20/25</strong> &mdash; 3.5&ndash;4.0 Mixed Gender (North Bethesda)
+            </div>
+          </div>
+          <div class="carousel__caption"></div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/2026-02-14-nb.jpg" alt="Medalists from the 3.5 to 4.0 bracket, North Bethesda, February 14 2026">
+            <div class="carousel__overlay">
+              <strong>2/14/26</strong> &mdash; 3.5&ndash;4.0 (North Bethesda)
+            </div>
+          </div>
+          <div class="carousel__caption">
+            <span class="carousel__medal carousel__medal--gold">Gold: Stephen Britten &amp; Josh Skillman</span>
+            <span class="carousel__medal carousel__medal--silver">Silver: Fan Yang &amp; Al Lin</span>
+            <span class="carousel__medal carousel__medal--bronze">Bronze: Lewis Bassford &amp; Ram Neupane</span>
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel__arrow carousel__arrow--next" aria-label="Next photo">&#10095;</button>
+      <div class="carousel__dots" id="carouselDots"></div>
     </div>
   </div>
 </section>
+
+<!-- Lightbox overlay -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox__close" aria-label="Close lightbox">&times;</button>
+  <img src="" alt="Full-size tournament photo">
+</div>
 
 <!-- ════════════════ 8. PLAYER GUIDE ════════════════ -->
 <section id="player-guide" class="section section--dark">
