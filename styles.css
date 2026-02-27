@@ -644,11 +644,12 @@ h3 {
 /* ─── Carousel ─── */
 .carousel {
   position: relative;
-  max-width: 700px;
+  max-width: 850px;
   margin: 0 auto;
   border-radius: 12px;
   background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-top: 3px solid var(--yellow);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
   overflow: hidden;
 }
 
@@ -677,26 +678,10 @@ h3 {
 
 .carousel__img-wrap img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   background: #e0ddd5;
   cursor: pointer;
-}
-
-.carousel__overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
-  color: white;
-  padding: 2rem 1rem 0.75rem;
-  font-size: 0.9rem;
-  pointer-events: none;
-}
-
-.carousel__overlay strong {
-  color: white;
 }
 
 /* Arrows */
@@ -710,17 +695,19 @@ h3 {
   height: 40px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.4);
-  color: white;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--spruce-green);
   font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, box-shadow 0.2s;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .carousel__arrow:hover {
-  background: rgba(0, 0, 0, 0.65);
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 .carousel__arrow--prev { left: 0.5rem; }
@@ -753,32 +740,8 @@ h3 {
 }
 
 .carousel__dot--active {
-  background: var(--spruce-green);
+  background: var(--yellow);
 }
-
-/* Caption (medalist names) */
-.carousel__caption {
-  padding: 0 1rem;
-  min-height: 0;
-}
-
-.carousel__caption:empty {
-  display: none;
-}
-
-.carousel__caption:not(:empty) {
-  padding: 0.5rem 1rem 0.75rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.75rem;
-  font-size: 0.85rem;
-  color: #555;
-}
-
-.carousel__medal { white-space: nowrap; }
-.carousel__medal--gold::before   { content: '\25C6 '; color: #c5a000; }
-.carousel__medal--silver::before { content: '\25C6 '; color: #888; }
-.carousel__medal--bronze::before { content: '\25C6 '; color: #cd7f32; }
 
 /* ─── Lightbox ─── */
 .lightbox {
