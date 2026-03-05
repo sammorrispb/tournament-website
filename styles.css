@@ -371,6 +371,12 @@ h3 {
   animation: fadeInUp 0.7s ease 0.3s both;
 }
 
+.hero__tagline {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+
 .hero__ctas {
   display: flex;
   gap: 1rem;
