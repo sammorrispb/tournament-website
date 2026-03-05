@@ -562,6 +562,27 @@ h3 {
   }
 }
 
+/* ─── Prize Banner ─── */
+.prize-banner {
+  background: linear-gradient(135deg, #2d5016 0%, #1a3409 100%);
+  color: white;
+  text-align: center;
+  padding: 1.25rem 1rem;
+  border-bottom: 3px solid #c9a227;
+}
+
+.prize-banner__headline {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: #f5d862;
+}
+
+.prize-banner__detail {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
 /* ─── Leaderboard ─── */
 .leaderboard__badges {
   display: flex;
