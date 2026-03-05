@@ -10,6 +10,10 @@
   --yellow: #fed144;
   --smoke: #fffdfa;
   --nav-height: 64px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --shadow-glow: 0 0 20px rgba(202, 243, 104, 0.3);
 }
 
 /* ─── Font Faces ─── */
@@ -126,11 +130,13 @@ h3 {
 .btn--primary {
   background: var(--light-fuschia);
   color: var(--spruce-green);
+  box-shadow: 0 2px 10px rgba(202, 243, 104, 0.25);
 }
 
 .btn--primary:hover {
   background: #d8ff78;
   color: var(--spruce-green);
+  box-shadow: 0 4px 20px rgba(202, 243, 104, 0.45);
 }
 
 .btn--secondary {
@@ -160,6 +166,10 @@ h3 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+.nav--scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
 .nav .container {
   display: flex;
   align-items: center;
@@ -178,7 +188,7 @@ h3 {
 }
 
 .nav__logo img {
-  height: 36px;
+  height: 40px;
   width: auto;
 }
 
@@ -291,17 +301,66 @@ h3 {
   color: var(--smoke);
   text-align: center;
   padding: 5rem 0 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(202, 243, 104, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 300px;
+  height: 300px;
+  background: url('assets/logos/IMG_0674.png') no-repeat center / contain;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
 .hero__logo {
-  width: 120px;
+  width: 180px;
   margin: 0 auto 1.5rem;
+  animation: fadeInUp 0.7s ease both;
 }
 
 .hero h1 {
   font-size: 2.75rem;
   margin-bottom: 0.75rem;
   color: var(--smoke);
+  animation: fadeInUp 0.7s ease 0.15s both;
+  background: linear-gradient(90deg, var(--smoke) 40%, var(--light-fuschia) 50%, var(--smoke) 60%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeInUp 0.7s ease 0.15s both, shimmer 4s ease-in-out 1.5s infinite;
 }
 
 .hero__subtitle {
@@ -309,6 +368,7 @@ h3 {
   color: var(--light-fuschia);
   margin-bottom: 2rem;
   font-weight: 500;
+  animation: fadeInUp 0.7s ease 0.3s both;
 }
 
 .hero__ctas {
@@ -316,6 +376,7 @@ h3 {
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  animation: fadeInUp 0.7s ease 0.45s both;
 }
 
 @media (min-width: 768px) {
@@ -324,8 +385,20 @@ h3 {
   }
 
   .hero__logo {
-    width: 150px;
+    width: 220px;
   }
+}
+
+/* ─── Scroll Reveal ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ─── About ─── */
@@ -370,13 +443,15 @@ h3 {
   background: white;
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .step-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(202, 243, 104, 0.4);
 }
 
 .step-card__number {
@@ -450,18 +525,20 @@ h3 {
   background: white;
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  transition: transform 0.15s, box-shadow 0.15s;
+  border: 1px solid transparent;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .bracket-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(202, 243, 104, 0.4);
 }
 
 .bracket-card__info h3 {
@@ -563,6 +640,7 @@ h3 {
 
 .leaderboard__row--first {
   background: #fefce8;
+  box-shadow: inset 4px 0 0 var(--yellow);
 }
 
 .leaderboard__row--first:hover {
@@ -908,6 +986,20 @@ body.lightbox-open {
   color: rgba(255, 255, 255, 0.7);
   padding: 2.5rem 0;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: -40px;
+  width: 200px;
+  height: 200px;
+  background: url('assets/logos/IMG_0674.png') no-repeat center / contain;
+  opacity: 0.03;
+  pointer-events: none;
 }
 
 .footer a {
@@ -934,6 +1026,20 @@ body.lightbox-open {
   color: var(--smoke);
   text-align: center;
   padding: 3.5rem 0 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.guide-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  right: -50px;
+  width: 250px;
+  height: 250px;
+  background: url('assets/logos/IMG_0674.png') no-repeat center / contain;
+  opacity: 0.05;
+  pointer-events: none;
 }
 
 .guide-hero h1 {
