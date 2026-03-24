@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Your Bracket | Link &amp; Dink Tournament Series</title>
+  <meta name="description" content="Not sure which bracket to enter? Take our 60-second quiz to find your perfect Link &amp; Dink tournament.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="assets/logos/IMG_0675.png">
+  <link rel="apple-touch-icon" href="assets/logos/IMG_0675.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="container">
+    <a href="index.html#hero" class="nav__logo">
+      <img src="assets/logos/IMG_0660.png" alt="Link &amp; Dink logo">
+    </a>
+    <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav__links">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#how-it-works">How It Works</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="spring-2026.html">Spring 2026</a></li>
+      <li><a href="index.html#leaderboard">Leaderboard</a></li>
+      <li><a href="player-guide.html">Player Guide</a></li>
+      <li><a href="index.html#faq">FAQ</a></li>
+      <li><a href="play.html" class="nav__link--active">Find Your Bracket</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ════════════════ QUIZ HEADER ════════════════ -->
+<header class="guide-hero">
+  <div class="container">
+    <img src="assets/logos/IMG_0661.png" alt="Link &amp; Dink logo" class="hero__logo">
+    <h1>Find Your Bracket</h1>
+  </div>
+</header>
+
+<!-- ════════════════ QUIZ ════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="quiz">
+
+      <!-- Progress bar -->
+      <div class="progress" id="progress-bar">
+        <span class="progress__dot progress__dot--active"></span>
+        <span class="progress__dot"></span>
+        <span class="progress__dot"></span>
+        <span class="progress__dot"></span>
+        <span class="progress__dot"></span>
+        <span class="progress__dot"></span>
+        <span class="progress__dot"></span>
+      </div>
+
+      <!-- Step 1: New or Returning -->
+      <div class="step step--active" data-step="1">
+        <h2 class="step__question">Have you played in a Link &amp; Dink tournament before?</h2>
+        <div class="option-grid">
+          <div class="option-card" data-value="veteran">
+            <div class="option-card__title">Yes, I'm a veteran</div>
+            <div class="option-card__desc">I've played in at least one L&amp;D tournament</div>
+          </div>
+          <div class="option-card" data-value="new">
+            <div class="option-card__title">No, first time</div>
+            <div class="option-card__desc">I'm new to Link &amp; Dink tournaments</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Experience -->
+      <div class="step" data-step="2">
+        <h2 class="step__question">How long have you been playing?</h2>
+        <div class="option-grid">
+          <div class="option-card" data-value="lt6mo">
+            <div class="option-card__title">Less than 6 months</div>
+          </div>
+          <div class="option-card" data-value="6mo1yr">
+            <div class="option-card__title">6 months to 1 year</div>
+          </div>
+          <div class="option-card" data-value="1to2yr">
+            <div class="option-card__title">1 to 2 years</div>
+          </div>
+          <div class="option-card" data-value="2plus">
+            <div class="option-card__title">2+ years</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Skill -->
+      <div class="step" data-step="3">
+        <h2 class="step__question">Which best describes your game?</h2>
+        <div class="option-list">
+          <div class="option-card" data-value="learning">
+            <div class="option-card__title">I'm still learning the basics</div>
+            <div class="option-card__desc">Dinks, serves, keeping score</div>
+          </div>
+          <div class="option-card" data-value="consistent">
+            <div class="option-card__title">I can hold rallies and play consistently</div>
+            <div class="option-card__desc">Third shot drops, positioning</div>
+          </div>
+          <div class="option-card" data-value="competitive">
+            <div class="option-card__title">I play competitively and have strategy</div>
+            <div class="option-card__desc">Stacking, resets, targeted attacks</div>
+          </div>
+          <div class="option-card" data-value="tournament">
+            <div class="option-card__title">I compete in tournaments regularly</div>
+            <div class="option-card__desc">Rated 4.0+ or DUPR verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Motivations -->
+      <div class="step" data-step="4">
+        <h2 class="step__question">What matters most to you?</h2>
+        <p class="step__subtitle">Pick up to 2</p>
+        <div class="option-grid" data-max="2">
+          <div class="option-card" data-value="competitive">
+            <div class="option-card__title">Competitive play</div>
+          </div>
+          <div class="option-card" data-value="social">
+            <div class="option-card__title">Meeting new people</div>
+          </div>
+          <div class="option-card" data-value="improvement">
+            <div class="option-card__title">Improving my game</div>
+          </div>
+          <div class="option-card" data-value="community">
+            <div class="option-card__title">Fun &amp; community</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Location -->
+      <div class="step" data-step="5">
+        <h2 class="step__question">Which location works better for you?</h2>
+        <div class="option-grid">
+          <div class="option-card" data-value="northbethesda">
+            <div class="option-card__title">North Bethesda</div>
+            <div class="option-card__desc">Saturdays</div>
+          </div>
+          <div class="option-card" data-value="rockville">
+            <div class="option-card__title">Rockville</div>
+            <div class="option-card__desc">Sundays</div>
+          </div>
+          <div class="option-card" data-value="either">
+            <div class="option-card__title">Either</div>
+            <div class="option-card__desc">I'm flexible</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6: Email Gate -->
+      <div class="step" data-step="6">
+        <h2 class="step__question">Almost there!</h2>
+        <p class="step__subtitle">Where should we send your recommendation? We'll also notify you when registration opens for your bracket.</p>
+        <form class="email-form" id="quiz-email-form">
+          <input type="text" name="name" placeholder="First name" required>
+          <input type="email" name="email" placeholder="Email address" required>
+          <button type="submit">Show My Results</button>
+        </form>
+      </div>
+
+      <!-- Step 7: Results -->
+      <div class="step" data-step="7">
+        <div class="results" id="quiz-results">
+          <!-- Populated by quiz.js -->
+        </div>
+      </div>
+
+      <!-- Veteran Fast-Track: Bracket Selector -->
+      <div class="step" data-step="vet-a">
+        <h2 class="step__question">What's your bracket?</h2>
+        <div class="option-grid">
+          <div class="option-card" data-value="3.0-3.5">
+            <div class="option-card__title">3.0 &ndash; 3.5</div>
+          </div>
+          <div class="option-card" data-value="3.5-4.0">
+            <div class="option-card__title">3.5 &ndash; 4.0</div>
+          </div>
+          <div class="option-card" data-value="4.0-4.5">
+            <div class="option-card__title">4.0 &ndash; 4.5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Veteran Fast-Track: Email -->
+      <div class="step" data-step="vet-b">
+        <h2 class="step__question">Want personalized recommendations?</h2>
+        <p class="step__subtitle">We'll notify you when registration opens for your bracket.</p>
+        <form class="email-form" id="vet-email-form">
+          <input type="text" name="name" placeholder="First name">
+          <input type="email" name="email" placeholder="Email address">
+          <button type="submit">Show My Events</button>
+        </form>
+        <button class="quiz-back" id="vet-skip" style="margin-top:1rem; text-align:center; width:100%;">Skip, just show me events</button>
+      </div>
+
+      <!-- Too Early -->
+      <div class="step" data-step="too-early">
+        <h2 class="step__question">You're on your way!</h2>
+        <p class="step__subtitle">Our tournaments start at the 3.0 level. Keep playing and you'll be ready soon!</p>
+        <p class="step__subtitle">Want us to let you know when beginner-friendly events launch?</p>
+        <form class="email-form" id="early-email-form">
+          <input type="text" name="name" placeholder="First name">
+          <input type="email" name="email" placeholder="Email address">
+          <button type="submit">Notify Me</button>
+        </form>
+        <div style="margin-top:1.5rem; text-align:center;">
+          <a href="index.html" class="btn btn--secondary">Back to Home</a>
+        </div>
+      </div>
+
+      <!-- Quiz Navigation -->
+      <div class="quiz-nav" id="quiz-nav">
+        <button class="quiz-back" id="back-btn" style="display:none;">Back</button>
+        <button class="quiz-next" id="next-btn" disabled>Next</button>
+      </div>
+
+    </div><!-- /.quiz -->
+  </div><!-- /.container -->
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer id="contact" class="footer">
+  <div class="container">
+    <div class="footer__links">
+      <a href="https://www.linkanddink.com" target="_blank" rel="noopener noreferrer">www.linkanddink.com</a>
+      <a href="https://www.sammorrispb.com" target="_blank" rel="noopener noreferrer">www.sammorrispb.com</a>
+      <a href="https://www.nextgenpbacademy.com" target="_blank" rel="noopener noreferrer">www.nextgenpbacademy.com</a>
+      <a href="mailto:sam.morris2131@gmail.com">sam.morris2131@gmail.com</a>
+    </div>
+    <p class="footer__copy">&copy; 2026 Link &amp; Dink. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="quiz.js"></script>
+</body>
+</html>
