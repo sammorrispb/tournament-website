@@ -45,7 +45,7 @@ Combines experience (Step 2) and skill self-assessment (Step 3):
 | Competitive with strategy | 3.0-3.5 | 3.5-4.0 | 3.5-4.0 | 3.5-4.0 |
 | Compete regularly 4.0+ | 3.5-4.0 | 3.5-4.0 | 4.0-4.5 | 4.0-4.5 |
 
-Too early shows a gentle message: Our tournaments start at 3.0. Keep playing and come back when you are ready! Links to open play events.
+Too early does NOT dead-end the visitor. Instead it shows an encouraging message: "Our tournaments start at 3.0 — keep playing and you will be ready soon!" with open play event links, PLUS an email capture: "Want us to let you know when beginner-friendly events launch?" Name + email fields, same POST to Hub API with bracket: "too-early" so the drip system can nurture them separately.
 
 ### Social Fit Tags
 
@@ -104,7 +104,8 @@ Request body:
       "motivations": ["competitive", "meeting-people"],
       "locationPref": "northbethesda",
       "isVeteran": false,
-      "source": "tournament-funnel"
+      "source": "tournament-funnel",
+      "completedSteps": 7
     }
 
 Success response:
@@ -140,8 +141,9 @@ Four sections, each with a colored left border:
 
 1. Your Bracket (green): 3.5-4.0 with brief explanation
 2. Recommended Events (purple): 2-3 upcoming tournaments at preferred location from /api/events with Register buttons
-3. Also For You (pink): Specialty events matching social fit (Womens, Mixed, Seniors)
-4. Join the Community (yellow): CTA to play.linkanddink.com (Hub) + player guide link
+3. Need a Partner? (blue): "Don't have a doubles partner? We can help match you." Links to play.linkanddink.com partner request flow
+4. Also For You (pink): Specialty events matching social fit (Womens, Mixed, Seniors)
+5. Join the Community (yellow): CTA to play.linkanddink.com (Hub) + player guide link
 
 ### Styles
 
@@ -157,9 +159,22 @@ Four sections, each with a colored left border:
 - Nav bar: Add Find Your Bracket link
 - Spring 2026 page: Add Not sure which bracket? CTA linking to /play
 
+## Funnel Analytics
+
+Track quiz completion and drop-off to measure funnel effectiveness.
+
+The lead POST to the Hub includes a completedSteps count so we know how far each visitor got. Two key events tracked:
+
+1. funnel-start: fires when /play loads (logged via a lightweight GET to /api/tournament-lead?event=start or tracked client-side)
+2. funnel-complete: fires on email submit (part of the lead POST payload)
+
+The Hub API stores these as funnel_events on the profile or in a separate analytics table. This gives Sam a simple conversion metric: starts vs completes, plus the ability to see where people drop off by checking completedSteps values.
+
+For v1, this is sufficient. More granular step-by-step tracking can be added later if needed.
+
 ## Edge Cases
 
-- Too early result: Visitor with less than 6 months who is still learning. Show encouraging message + open play events.
+- Too early result: Visitor with less than 6 months who is still learning. Show encouraging message + open play events + email capture with "notify me when beginner events launch." Lead sent to Hub with bracket: "too-early" for separate nurture track.
 - No events for bracket: If /api/events returns no matching events, show Events coming soon with email notification promise.
 - Hub API down: Store answers in localStorage and show results anyway. The email is lost but the UX is not broken.
 - Duplicate emails: Hub endpoint upserts (updates if exists), does not reject. Updates quiz answers and re-tags source.
