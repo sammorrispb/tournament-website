@@ -108,3 +108,189 @@ if (track) {
     if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox();
   });
 }
+
+// ═══════════════════════════════════════════════
+// Dynamic Data Loading (Notion + CourtReserve)
+// ═══════════════════════════════════════════════
+
+function escapeHtml(str) {
+  var el = document.createElement('span');
+  el.textContent = str;
+  return el.innerHTML;
+}
+
+// ─── Dynamic Leaderboard (index.html) ───
+(async function loadLeaderboard() {
+  var tbody = document.getElementById('leaderboard-body');
+  if (!tbody) return;
+
+  var wrap = document.getElementById('leaderboard-wrap');
+  if (wrap) wrap.setAttribute('data-loading', 'true');
+
+  try {
+    var res = await fetch('/api/leaderboard');
+    if (!res.ok) return;
+    var data = await res.json();
+    var players = data.players;
+    if (!players || players.length === 0) return;
+
+    // Build rows using DOM methods for safety
+    while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+    players.forEach(function(p, i) {
+      var rank = i + 1;
+      var tr = document.createElement('tr');
+      tr.className = rank === 1
+        ? 'leaderboard__row leaderboard__row--first'
+        : 'leaderboard__row';
+
+      var tdRank = document.createElement('td');
+      tdRank.className = 'leaderboard__rank';
+      tdRank.textContent = rank;
+      tr.appendChild(tdRank);
+
+      var tdName = document.createElement('td');
+      tdName.className = 'leaderboard__name';
+      tdName.textContent = p.name;
+      tr.appendChild(tdName);
+
+      var tdMedals = document.createElement('td');
+      tdMedals.className = 'leaderboard__medals';
+      if (p.gold > 0) tdMedals.appendChild(createMedalSpan('gold', p.gold));
+      if (p.silver > 0) tdMedals.appendChild(createMedalSpan('silver', p.silver));
+      if (p.bronze > 0) tdMedals.appendChild(createMedalSpan('bronze', p.bronze));
+      if (!p.gold && !p.silver && !p.bronze) tdMedals.textContent = '\u2014';
+      tr.appendChild(tdMedals);
+
+      var tdPts = document.createElement('td');
+      tdPts.className = 'leaderboard__points';
+      tdPts.textContent = p.totalPoints;
+      tr.appendChild(tdPts);
+
+      tbody.appendChild(tr);
+    });
+  } catch (e) {
+    // Silent failure — static fallback remains
+  } finally {
+    if (wrap) wrap.removeAttribute('data-loading');
+  }
+})();
+
+function createMedalSpan(type, count) {
+  var span = document.createElement('span');
+  span.className = 'medal medal--' + type;
+  span.textContent = count;
+  return span;
+}
+
+// ─── Dynamic Spring Schedule (spring-2026.html) ───
+(async function loadSpringEvents() {
+  var nbBody = document.getElementById('nb-schedule-body');
+  var rvBody = document.getElementById('rv-schedule-body');
+  if (!nbBody && !rvBody) return;
+
+  var nbWrap = document.getElementById('nb-table-wrap');
+  var rvWrap = document.getElementById('rv-table-wrap');
+  if (nbWrap) nbWrap.setAttribute('data-loading', 'true');
+  if (rvWrap) rvWrap.setAttribute('data-loading', 'true');
+
+  try {
+    var res = await fetch('/api/events');
+    if (!res.ok) return;
+    var data = await res.json();
+    var locations = data.locations;
+    if (!locations) return;
+
+    var nbData = locations.find(function(l) { return l.location === 'northbethesda'; });
+    var rvData = locations.find(function(l) { return l.location === 'rockville'; });
+
+    if (nbData && nbData.events.length > 0 && nbBody) {
+      renderScheduleTable(nbBody, nbData.events);
+      var nbNote = document.getElementById('nb-schedule-note');
+      if (nbNote) nbNote.classList.add('schedule-note--hidden');
+    }
+    if (rvData && rvData.events.length > 0 && rvBody) {
+      renderScheduleTable(rvBody, rvData.events);
+      var rvNote = document.getElementById('rv-schedule-note');
+      if (rvNote) rvNote.classList.add('schedule-note--hidden');
+    }
+  } catch (e) {
+    // Silent failure — static "Coming Soon" rows remain
+  } finally {
+    if (nbWrap) nbWrap.removeAttribute('data-loading');
+    if (rvWrap) rvWrap.removeAttribute('data-loading');
+  }
+})();
+
+function renderScheduleTable(tbody, events) {
+  var now = new Date();
+  while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+  events.forEach(function(e) {
+    var dt = new Date(e.startDateTime);
+    var dateStr = dt.toLocaleDateString('en-US', {
+      weekday: 'short', month: 'short', day: 'numeric'
+    });
+
+    // Extract bracket from event name (e.g., "Link and Dink Tournament 3.0-3.5")
+    var bracketMatch = e.name.match(/(\d\.\d)\s*[-\u2013]\s*(\d\.\d)/);
+    var bracket = bracketMatch ? bracketMatch[1] + '\u2013' + bracketMatch[2] : '\u2014';
+
+    // Detect special format tags from event name
+    var nameLower = e.name.toLowerCase();
+    var specialTag = null;
+    if (nameLower.includes('women')) specialTag = 'Women\u2019s Only';
+    else if (nameLower.includes('mixed')) specialTag = 'Mixed Gender';
+    else if (nameLower.includes('senior') || nameLower.includes('50+')) specialTag = '50+ Seniors';
+    else if (nameLower.includes('junior') || nameLower.includes('14')) specialTag = '14 & Under Juniors';
+
+    var tr = document.createElement('tr');
+
+    // Date cell
+    var tdDate = document.createElement('td');
+    tdDate.textContent = dateStr;
+    tr.appendChild(tdDate);
+
+    // Bracket cell
+    var tdBracket = document.createElement('td');
+    tdBracket.textContent = bracket;
+    tr.appendChild(tdBracket);
+
+    // Special format cell
+    var tdSpecial = document.createElement('td');
+    if (specialTag) {
+      var badge = document.createElement('span');
+      badge.className = 'badge badge--special';
+      badge.textContent = specialTag;
+      tdSpecial.appendChild(badge);
+    } else {
+      tdSpecial.textContent = '\u2014';
+    }
+    tr.appendChild(tdSpecial);
+
+    // Registration cell
+    var tdReg = document.createElement('td');
+    if (dt < now) {
+      var completed = document.createElement('span');
+      completed.className = 'btn--disabled';
+      completed.textContent = 'Completed';
+      tdReg.appendChild(completed);
+    } else if (e.isFull) {
+      var full = document.createElement('span');
+      full.className = 'btn--disabled';
+      full.textContent = 'Full';
+      tdReg.appendChild(full);
+    } else {
+      var link = document.createElement('a');
+      link.href = e.registrationUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'btn btn--primary btn--small';
+      link.textContent = 'Register';
+      tdReg.appendChild(link);
+    }
+    tr.appendChild(tdReg);
+
+    tbody.appendChild(tr);
+  });
+}

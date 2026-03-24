@@ -1329,3 +1329,21 @@ body.lightbox-open {
   color: #888;
   cursor: default;
 }
+
+/* ─── Dynamic Data Loading ─── */
+[data-loading="true"] {
+  position: relative;
+  opacity: 0.7;
+}
+[data-loading="true"]::after {
+  content: 'Loading fresh data…';
+  display: block;
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+.schedule-note--hidden {
+  display: none;
+}
