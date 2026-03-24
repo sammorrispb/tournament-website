@@ -66,12 +66,8 @@ export default async function handler(req, res) {
     res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=1800");
     return res.status(200).json({ players });
   } catch (err) {
-    console.error("Leaderboard fetch failed:", err.message, err.code, err.status);
-    return res.status(500).json({
-      error: "Failed to fetch leaderboard",
-      detail: err.message,
-      code: err.code,
-    });
+    console.error("Leaderboard fetch failed:", err.message);
+    return res.status(500).json({ error: "Failed to fetch leaderboard" });
   }
 }
 
