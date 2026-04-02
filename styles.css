@@ -1330,6 +1330,157 @@ body.lightbox-open {
   cursor: default;
 }
 
+/* ─── Ghost Button ─── */
+.btn--ghost {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.btn--ghost:hover {
+  border-color: var(--light-fuschia);
+  color: var(--light-fuschia);
+  background: rgba(202, 243, 104, 0.08);
+}
+
+/* ─── Archive Banner ─── */
+.archive-banner {
+  background: var(--yellow);
+  color: var(--green-black);
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.archive-banner a {
+  color: var(--spruce-green);
+  font-weight: 700;
+}
+
+/* ─── Winter Champions Banner ─── */
+.winners-banner {
+  background: linear-gradient(135deg, #2d5016 0%, #1a3409 100%);
+  color: white;
+  text-align: center;
+  padding: 3rem 1rem;
+  border-bottom: 3px solid #c9a227;
+}
+
+.winners-banner h2 {
+  color: var(--yellow);
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.winners-banner__cards {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.winners-banner__card {
+  background: white;
+  color: var(--green-black);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  border-left: 4px solid var(--yellow);
+  box-shadow: var(--shadow-md);
+  min-width: 200px;
+  text-align: center;
+}
+
+.winners-banner__card h3 {
+  color: var(--spruce-green);
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+
+.winners-banner__points {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--spruce-green);
+  margin-bottom: 0.25rem;
+}
+
+.winners-banner__medals {
+  display: flex;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.winners-banner__detail {
+  opacity: 0.9;
+  margin-bottom: 1rem;
+  max-width: 500px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+.winners-banner .btn--small {
+  margin-top: 0.5rem;
+}
+
+/* ─── Hub Callout ─── */
+.hub-callout {
+  background: rgba(202, 243, 104, 0.1);
+  border-left: 4px solid var(--light-fuschia);
+  border-radius: 0 12px 12px 0;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+  max-width: 600px;
+}
+
+.hub-callout p {
+  margin-bottom: 0.5rem;
+}
+
+.hub-callout p:last-child {
+  margin-bottom: 0;
+}
+
+.section--dark .hub-callout {
+  background: rgba(202, 243, 104, 0.08);
+}
+
+/* ─── Leaderboard Empty State ─── */
+.leaderboard__empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: #888;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+/* ─── Tournament Results ─── */
+.results-empty {
+  color: #888;
+  font-style: italic;
+  padding: 1.5rem 0;
+}
+
+.results-podium {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.results-podium__place {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+/* ─── Nav Hub Link Accent ─── */
+.nav__links .nav__hub-link {
+  color: var(--light-fuschia);
+  font-weight: 600;
+}
+
 /* ─── Dynamic Data Loading ─── */
 [data-loading="true"] {
   position: relative;

@@ -119,62 +119,10 @@ function escapeHtml(str) {
   return el.innerHTML;
 }
 
-// ─── Dynamic Leaderboard (index.html) ───
-(async function loadLeaderboard() {
-  var tbody = document.getElementById('leaderboard-body');
-  if (!tbody) return;
-
-  var wrap = document.getElementById('leaderboard-wrap');
-  if (wrap) wrap.setAttribute('data-loading', 'true');
-
-  try {
-    var res = await fetch('/api/leaderboard');
-    if (!res.ok) return;
-    var data = await res.json();
-    var players = data.players;
-    if (!players || players.length === 0) return;
-
-    // Build rows using DOM methods for safety
-    while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
-
-    players.forEach(function(p, i) {
-      var rank = i + 1;
-      var tr = document.createElement('tr');
-      tr.className = rank === 1
-        ? 'leaderboard__row leaderboard__row--first'
-        : 'leaderboard__row';
-
-      var tdRank = document.createElement('td');
-      tdRank.className = 'leaderboard__rank';
-      tdRank.textContent = rank;
-      tr.appendChild(tdRank);
-
-      var tdName = document.createElement('td');
-      tdName.className = 'leaderboard__name';
-      tdName.textContent = p.name;
-      tr.appendChild(tdName);
-
-      var tdMedals = document.createElement('td');
-      tdMedals.className = 'leaderboard__medals';
-      if (p.gold > 0) tdMedals.appendChild(createMedalSpan('gold', p.gold));
-      if (p.silver > 0) tdMedals.appendChild(createMedalSpan('silver', p.silver));
-      if (p.bronze > 0) tdMedals.appendChild(createMedalSpan('bronze', p.bronze));
-      if (!p.gold && !p.silver && !p.bronze) tdMedals.textContent = '\u2014';
-      tr.appendChild(tdMedals);
-
-      var tdPts = document.createElement('td');
-      tdPts.className = 'leaderboard__points';
-      tdPts.textContent = p.totalPoints;
-      tr.appendChild(tdPts);
-
-      tbody.appendChild(tr);
-    });
-  } catch (e) {
-    // Silent failure — static fallback remains
-  } finally {
-    if (wrap) wrap.removeAttribute('data-loading');
-  }
-})();
+// ─── Leaderboard (index.html) ───
+// Spring 2026: Static leaderboard in HTML, updated manually.
+// Notion API loader preserved below for future use if needed.
+// (async function loadLeaderboard() { ... })();
 
 function createMedalSpan(type, count) {
   var span = document.createElement('span');
