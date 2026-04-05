@@ -272,6 +272,51 @@ function renderScheduleTable(tbody, events, locationKey) {
 
     tbody.appendChild(tr);
 
+    // "Need a Partner?" row for upcoming events
+    if (!isPast) {
+      var partnerToggleTr = document.createElement('tr');
+      partnerToggleTr.className = 'partner-toggle-row';
+      var partnerToggleTd = document.createElement('td');
+      partnerToggleTd.setAttribute('colspan', colCount);
+      var partnerToggleBtn = document.createElement('button');
+      partnerToggleBtn.className = 'partner-toggle';
+      partnerToggleBtn.textContent = 'Need a Partner? \u25BC';
+      partnerToggleBtn.setAttribute('aria-expanded', 'false');
+      partnerToggleTd.appendChild(partnerToggleBtn);
+      partnerToggleTr.appendChild(partnerToggleTd);
+      tbody.appendChild(partnerToggleTr);
+
+      var partnerDetailTr = document.createElement('tr');
+      partnerDetailTr.className = 'partner-detail-row';
+      partnerDetailTr.style.display = 'none';
+      var partnerDetailTd = document.createElement('td');
+      partnerDetailTd.setAttribute('colspan', colCount);
+      partnerDetailTd.className = 'partner-detail';
+      partnerDetailTr.appendChild(partnerDetailTd);
+      tbody.appendChild(partnerDetailTr);
+
+      (function(btn, detailRow, detailCell, eventId, loc, bracketStr, eventDate) {
+        var seekersLoaded = false;
+        btn.addEventListener('click', function() {
+          var isOpen = detailRow.style.display !== 'none';
+          if (isOpen) {
+            detailRow.style.display = 'none';
+            btn.textContent = 'Need a Partner? \u25BC';
+            btn.setAttribute('aria-expanded', 'false');
+            return;
+          }
+          detailRow.style.display = '';
+          btn.textContent = 'Hide Partner Board \u25B2';
+          btn.setAttribute('aria-expanded', 'true');
+          if (seekersLoaded) return;
+          seekersLoaded = true;
+          detailCell.innerHTML = renderPartnerPanel(eventId, loc, bracketStr, eventDate);
+          loadPartnerSeekers(detailCell.querySelector('.partner-seekers-list'), eventId, loc);
+          wirePartnerForm(detailCell, eventId, loc, bracketStr, eventDate);
+        });
+      })(partnerToggleBtn, partnerDetailTr, partnerDetailTd, e.eventId, locationKey, bracket, e.startDateTime);
+    }
+
     // "See Who's Playing" expandable row (only for upcoming events with registrants)
     if (!isPast && e.registeredCount > 0) {
       // Toggle link in a row below
@@ -380,4 +425,205 @@ function renderRegistrantsFallback(message) {
   html += '<p class="registrants-hub-cta">Looking for a partner? <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
   html += '</div>';
   return html;
+}
+
+// ═══════════════════════════════════════════════
+// Partner Seeker System
+// ═══════════════════════════════════════════════
+
+function renderPartnerPanel(eventId, location, bracket, eventDate) {
+  var html = '<div class="partner-panel">';
+
+  // Seekers list section
+  html += '<div class="partner-seekers">';
+  html += '<span class="partner-seekers__label">Players Looking for Partners</span>';
+  html += '<div class="partner-seekers-list"><span class="registrants-loading">Loading\u2026</span></div>';
+  html += '</div>';
+
+  // "I Need a Partner" form
+  html += '<div class="partner-form-wrap">';
+  html += '<span class="partner-form__label">Post That You Need a Partner</span>';
+  html += '<form class="partner-form" autocomplete="off">';
+  html += '<div class="partner-form__row">';
+  html += '<input type="text" name="name" class="partner-form__field" placeholder="First name" required maxlength="50">';
+  html += '<input type="email" name="email" class="partner-form__field" placeholder="Email" required maxlength="100">';
+  html += '</div>';
+  html += '<input type="text" name="message" class="partner-form__field partner-form__field--full" placeholder="Short note (optional, e.g. &quot;Available for Saturday 3.0-3.5&quot;)" maxlength="200">';
+  html += '<label class="partner-form__consent"><input type="checkbox" name="consent" required> Allow other players to contact me via email about partnering</label>';
+  html += '<button type="submit" class="btn btn--primary btn--small partner-form__submit">Post as Seeking Partner</button>';
+  html += '<div class="partner-form__status"></div>';
+  html += '</form>';
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+function loadPartnerSeekers(container, eventId, location) {
+  if (!container) return;
+  fetch('/api/partner-seekers?eventId=' + encodeURIComponent(eventId) + '&location=' + encodeURIComponent(location))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data.supported || !data.seekers || data.seekers.length === 0) {
+        container.innerHTML = '<p class="partner-seekers__empty">No one is looking for a partner yet. Be the first!</p>';
+        return;
+      }
+      var html = '<div class="partner-seekers__chips">';
+      data.seekers.forEach(function(s) {
+        html += renderSeekerChip(s);
+      });
+      html += '</div>';
+      container.innerHTML = html;
+      wireConnectButtons(container);
+    })
+    .catch(function() {
+      container.innerHTML = '<p class="partner-seekers__empty">Partner matching coming soon. <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
+    });
+}
+
+function renderSeekerChip(s) {
+  var html = '<div class="seeker-chip">';
+  html += '<span class="seeker-chip__name">' + escapeHtml(s.name) + '</span>';
+  if (s.dupr) {
+    html += ' <span class="seeker-chip__dupr">' + Number(s.dupr).toFixed(2) + '</span>';
+  }
+  if (s.bracket) {
+    html += ' <span class="seeker-chip__bracket">' + escapeHtml(s.bracket) + '</span>';
+  }
+  if (s.message) {
+    html += '<span class="seeker-chip__msg">' + escapeHtml(s.message) + '</span>';
+  }
+  html += '<button class="seeker-connect-btn" data-request-id="' + escapeHtml(s.requestId || '') + '" data-seeker-name="' + escapeHtml(s.name) + '">Connect</button>';
+  html += '</div>';
+  return html;
+}
+
+function wireConnectButtons(container) {
+  container.querySelectorAll('.seeker-connect-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var seekerName = btn.getAttribute('data-seeker-name');
+      var requestId = btn.getAttribute('data-request-id');
+      var chip = btn.closest('.seeker-chip');
+
+      // Check if form already open
+      if (chip.querySelector('.connect-form')) return;
+
+      var form = document.createElement('form');
+      form.className = 'connect-form';
+      form.innerHTML = '<input type="text" name="name" class="partner-form__field" placeholder="Your name" required maxlength="50">'
+        + '<input type="email" name="email" class="partner-form__field" placeholder="Your email" required maxlength="100">'
+        + '<input type="text" name="message" class="partner-form__field" placeholder="Quick message (optional)" maxlength="200">'
+        + '<div class="connect-form__actions">'
+        + '<button type="submit" class="btn btn--primary btn--small">Send to ' + escapeHtml(seekerName) + '</button>'
+        + '<button type="button" class="btn btn--ghost btn--small connect-form__cancel">Cancel</button>'
+        + '</div>'
+        + '<div class="connect-form__status"></div>';
+
+      chip.appendChild(form);
+
+      form.querySelector('.connect-form__cancel').addEventListener('click', function() {
+        form.remove();
+      });
+
+      form.addEventListener('submit', function(ev) {
+        ev.preventDefault();
+        var statusEl = form.querySelector('.connect-form__status');
+        var submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending\u2026';
+        statusEl.textContent = '';
+
+        var fd = new FormData(form);
+        fetch('/api/partner-seek', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'connect',
+            requestId: requestId,
+            name: fd.get('name'),
+            email: fd.get('email'),
+            message: fd.get('message') || ''
+          })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.success || data.ok) {
+            statusEl.className = 'connect-form__status connect-form__status--ok';
+            statusEl.textContent = 'Message sent! ' + escapeHtml(seekerName) + ' will receive your email.';
+            setTimeout(function() { form.remove(); }, 3000);
+          } else {
+            statusEl.className = 'connect-form__status connect-form__status--err';
+            statusEl.textContent = data.message || data.error || 'Could not send. Try again.';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send to ' + seekerName;
+          }
+        })
+        .catch(function() {
+          statusEl.className = 'connect-form__status connect-form__status--err';
+          statusEl.textContent = 'Network error. Please try again.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send to ' + seekerName;
+        });
+      });
+    });
+  });
+}
+
+function wirePartnerForm(panel, eventId, location, bracket, eventDate) {
+  var form = panel.querySelector('.partner-form');
+  if (!form) return;
+
+  form.addEventListener('submit', function(ev) {
+    ev.preventDefault();
+    var statusEl = form.querySelector('.partner-form__status');
+    var submitBtn = form.querySelector('.partner-form__submit');
+    var consent = form.querySelector('input[name="consent"]');
+
+    if (!consent.checked) {
+      statusEl.className = 'partner-form__status partner-form__status--err';
+      statusEl.textContent = 'Please check the consent box to allow other players to contact you.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Posting\u2026';
+    statusEl.textContent = '';
+
+    var fd = new FormData(form);
+    fetch('/api/partner-seek', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: fd.get('name'),
+        email: fd.get('email'),
+        bracket: bracket,
+        eventId: eventId,
+        location: location,
+        eventDate: eventDate || null,
+        message: fd.get('message') || ''
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success) {
+        statusEl.className = 'partner-form__status partner-form__status--ok';
+        statusEl.textContent = data.message || 'Posted! Other players can now see you\u2019re looking for a partner.';
+        form.reset();
+        // Refresh seeker list
+        var seekersList = panel.querySelector('.partner-seekers-list');
+        if (seekersList) loadPartnerSeekers(seekersList, eventId, location);
+      } else {
+        statusEl.className = 'partner-form__status partner-form__status--err';
+        statusEl.textContent = data.message || data.error || 'Could not post. Please try again.';
+      }
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Post as Seeking Partner';
+    })
+    .catch(function() {
+      statusEl.className = 'partner-form__status partner-form__status--err';
+      statusEl.textContent = 'Network error. Please try again.';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Post as Seeking Partner';
+    });
+  });
 }
