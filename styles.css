@@ -1423,6 +1423,148 @@ body.lightbox-open {
   margin-top: 0.5rem;
 }
 
+/* ─── Spots Badges ─── */
+.spots-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background: rgba(202, 243, 104, 0.15);
+  color: var(--lime);
+}
+
+.spots-badge--low {
+  background: rgba(255, 193, 7, 0.15);
+  color: #f5a623;
+}
+
+.spots-badge--full {
+  background: rgba(255, 82, 82, 0.12);
+  color: #ff5252;
+}
+
+.spots-waitlist {
+  display: block;
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+/* ─── Registrants (See Who's Playing) ─── */
+.registrants-toggle-row td {
+  padding: 0 0.75rem 0.5rem;
+  border-bottom: none;
+}
+
+.registrants-toggle {
+  background: none;
+  border: none;
+  color: var(--lime);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+
+.registrants-toggle:hover {
+  color: var(--light-fuschia);
+}
+
+.registrants-detail-row td {
+  padding: 0 0.75rem 1rem;
+}
+
+.registrants-detail {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.registrants-list {
+  max-width: 600px;
+}
+
+.registrants-group {
+  margin-bottom: 0.75rem;
+}
+
+.registrants-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin-bottom: 0.4rem;
+}
+
+.registrants-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.registrant-chip {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 16px;
+  background: rgba(202, 243, 104, 0.12);
+  color: var(--lime);
+  border: 1px solid rgba(202, 243, 104, 0.2);
+}
+
+.registrant-chip--waitlist {
+  background: rgba(255, 193, 7, 0.1);
+  color: #f5a623;
+  border-color: rgba(255, 193, 7, 0.2);
+}
+
+.registrants-group--waitlist .registrants-label {
+  color: #f5a623;
+}
+
+.registrant-chip--hub {
+  border-color: var(--lime);
+}
+
+.registrant-dupr {
+  font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.7;
+  margin-left: 0.2rem;
+}
+
+.registrants-loading {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+.registrants-empty {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.registrants-hub-cta {
+  font-size: 0.8rem;
+  margin-top: 0.75rem;
+  color: #999;
+}
+
+.registrants-hub-cta a {
+  color: var(--lime);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.registrants-hub-cta a:hover {
+  color: var(--light-fuschia);
+}
+
 /* ─── Hub Callout ─── */
 .hub-callout {
   background: rgba(202, 243, 104, 0.1);
@@ -1497,4 +1639,254 @@ body.lightbox-open {
 }
 .schedule-note--hidden {
   display: none;
+}
+
+/* ─── Partner Seeker System ─── */
+.partner-toggle-row td {
+  padding: 0 0.75rem 0.5rem;
+  border-bottom: none;
+}
+
+.partner-toggle {
+  background: none;
+  border: none;
+  color: var(--violet);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  transition: color 0.2s;
+}
+
+.partner-toggle:hover {
+  color: var(--playful-pink);
+}
+
+.partner-detail-row td {
+  padding: 0 0.75rem 1rem;
+}
+
+.partner-detail {
+  background: rgba(181, 175, 241, 0.06);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid rgba(181, 175, 241, 0.15);
+}
+
+.partner-panel {
+  max-width: 600px;
+}
+
+/* Seekers list */
+.partner-seekers {
+  margin-bottom: 1.25rem;
+}
+
+.partner-seekers__label,
+.partner-form__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--violet);
+  margin-bottom: 0.5rem;
+}
+
+.partner-seekers__chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.partner-seekers__empty {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+.partner-seekers__empty a {
+  color: var(--lime, var(--light-fuschia));
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Seeker chip */
+.seeker-chip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(181, 175, 241, 0.1);
+  border: 1px solid rgba(181, 175, 241, 0.2);
+  font-size: 0.85rem;
+}
+
+.seeker-chip__name {
+  font-weight: 600;
+  color: var(--smoke);
+}
+
+.seeker-chip__dupr {
+  font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.seeker-chip__bracket {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+  background: rgba(202, 243, 104, 0.15);
+  color: var(--light-fuschia);
+}
+
+.seeker-chip__msg {
+  display: block;
+  width: 100%;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-style: italic;
+}
+
+.seeker-connect-btn {
+  margin-left: auto;
+  background: var(--violet);
+  color: var(--dark-violet);
+  border: none;
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.seeker-connect-btn:hover {
+  background: var(--playful-pink);
+}
+
+/* Partner form */
+.partner-form-wrap {
+  border-top: 1px solid rgba(181, 175, 241, 0.15);
+  padding-top: 1rem;
+}
+
+.partner-form__row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.partner-form__field {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(181, 175, 241, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--smoke);
+  font-size: 0.85rem;
+  font-family: inherit;
+  flex: 1;
+}
+
+.partner-form__field::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.partner-form__field:focus {
+  outline: none;
+  border-color: var(--violet);
+  box-shadow: 0 0 0 2px rgba(181, 175, 241, 0.2);
+}
+
+.partner-form__field--full {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.partner-form__consent {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+
+.partner-form__consent input[type="checkbox"] {
+  accent-color: var(--violet);
+}
+
+.partner-form__submit {
+  margin-bottom: 0.5rem;
+}
+
+.partner-form__status {
+  font-size: 0.8rem;
+  min-height: 1.2em;
+}
+
+.partner-form__status--ok {
+  color: var(--light-fuschia);
+}
+
+.partner-form__status--err {
+  color: #f5a623;
+}
+
+/* Connect form (inline in seeker chip) */
+.connect-form {
+  width: 100%;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.connect-form .partner-form__field {
+  flex: 1;
+  min-width: 120px;
+}
+
+.connect-form__actions {
+  display: flex;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.connect-form__cancel {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+}
+
+.connect-form__status {
+  width: 100%;
+  font-size: 0.78rem;
+  min-height: 1em;
+}
+
+.connect-form__status--ok {
+  color: var(--light-fuschia);
+}
+
+.connect-form__status--err {
+  color: #f5a623;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .partner-form__row {
+    flex-direction: column;
+  }
+  .seeker-chip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .seeker-connect-btn {
+    margin-left: 0;
+    margin-top: 0.3rem;
+  }
 }
