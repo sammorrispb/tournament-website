@@ -153,12 +153,12 @@ function createMedalSpan(type, count) {
     var rvData = locations.find(function(l) { return l.location === 'rockville'; });
 
     if (nbData && nbData.events.length > 0 && nbBody) {
-      renderScheduleTable(nbBody, nbData.events);
+      renderScheduleTable(nbBody, nbData.events, 'northbethesda');
       var nbNote = document.getElementById('nb-schedule-note');
       if (nbNote) nbNote.classList.add('schedule-note--hidden');
     }
     if (rvData && rvData.events.length > 0 && rvBody) {
-      renderScheduleTable(rvBody, rvData.events);
+      renderScheduleTable(rvBody, rvData.events, 'rockville');
       var rvNote = document.getElementById('rv-schedule-note');
       if (rvNote) rvNote.classList.add('schedule-note--hidden');
     }
@@ -170,12 +170,14 @@ function createMedalSpan(type, count) {
   }
 })();
 
-function renderScheduleTable(tbody, events) {
+function renderScheduleTable(tbody, events, locationKey) {
   var now = new Date();
+  var colCount = 6; // Date, Bracket, Special, Spots, Register, Players toggle
   while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
 
   events.forEach(function(e) {
     var dt = new Date(e.startDateTime);
+    var isPast = dt < now;
     var dateStr = dt.toLocaleDateString('en-US', {
       weekday: 'short', month: 'short', day: 'numeric'
     });
@@ -218,7 +220,7 @@ function renderScheduleTable(tbody, events) {
 
     // Spots cell
     var tdSpots = document.createElement('td');
-    if (dt < now) {
+    if (isPast) {
       tdSpots.textContent = '\u2014';
     } else if (e.maxRegistrants > 0) {
       var remaining = e.maxRegistrants - e.registeredCount;
@@ -247,7 +249,7 @@ function renderScheduleTable(tbody, events) {
 
     // Registration cell
     var tdReg = document.createElement('td');
-    if (dt < now) {
+    if (isPast) {
       var completed = document.createElement('span');
       completed.className = 'btn--disabled';
       completed.textContent = 'Completed';
@@ -269,5 +271,101 @@ function renderScheduleTable(tbody, events) {
     tr.appendChild(tdReg);
 
     tbody.appendChild(tr);
+
+    // "See Who's Playing" expandable row (only for upcoming events with registrants)
+    if (!isPast && e.registeredCount > 0) {
+      // Toggle link in a row below
+      var toggleTr = document.createElement('tr');
+      toggleTr.className = 'registrants-toggle-row';
+      var toggleTd = document.createElement('td');
+      toggleTd.setAttribute('colspan', colCount);
+      var toggleBtn = document.createElement('button');
+      toggleBtn.className = 'registrants-toggle';
+      toggleBtn.textContent = 'See Who\u2019s Playing \u25BC';
+      toggleBtn.setAttribute('aria-expanded', 'false');
+      toggleTd.appendChild(toggleBtn);
+      toggleTr.appendChild(toggleTd);
+      tbody.appendChild(toggleTr);
+
+      // Expandable registrant list row (hidden by default)
+      var detailTr = document.createElement('tr');
+      detailTr.className = 'registrants-detail-row';
+      detailTr.style.display = 'none';
+      var detailTd = document.createElement('td');
+      detailTd.setAttribute('colspan', colCount);
+      detailTd.className = 'registrants-detail';
+      detailTr.appendChild(detailTd);
+      tbody.appendChild(detailTr);
+
+      // Wire up toggle
+      (function(btn, detailRow, detailCell, eventId, loc) {
+        var loaded = false;
+        btn.addEventListener('click', function() {
+          var isOpen = detailRow.style.display !== 'none';
+          if (isOpen) {
+            detailRow.style.display = 'none';
+            btn.textContent = 'See Who\u2019s Playing \u25BC';
+            btn.setAttribute('aria-expanded', 'false');
+            return;
+          }
+          detailRow.style.display = '';
+          btn.textContent = 'Hide Players \u25B2';
+          btn.setAttribute('aria-expanded', 'true');
+          if (loaded) return;
+
+          // Fetch registrants
+          detailCell.innerHTML = '<span class="registrants-loading">Loading players\u2026</span>';
+          fetch('/api/registrants?eventId=' + encodeURIComponent(eventId) + '&location=' + encodeURIComponent(loc))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              loaded = true;
+              if (!data.supported) {
+                detailCell.innerHTML = renderRegistrantsFallback(data.message);
+                return;
+              }
+              detailCell.innerHTML = renderRegistrantsList(data.registrants, data.waitlisted);
+            })
+            .catch(function() {
+              detailCell.innerHTML = renderRegistrantsFallback('Could not load player list. Try again later.');
+            });
+        });
+      })(toggleBtn, detailTr, detailTd, e.eventId, locationKey);
+    }
   });
+}
+
+// ─── Registrant rendering helpers ───
+function renderRegistrantsList(registered, waitlisted) {
+  var html = '<div class="registrants-list">';
+  if (registered.length === 0) {
+    html += '<p class="registrants-empty">No player details available yet.</p>';
+  } else {
+    html += '<div class="registrants-group">';
+    html += '<span class="registrants-label">Registered (' + registered.length + ')</span>';
+    html += '<div class="registrants-chips">';
+    registered.forEach(function(r) {
+      html += '<span class="registrant-chip">' + escapeHtml(r.name) + '</span>';
+    });
+    html += '</div></div>';
+  }
+  if (waitlisted && waitlisted.length > 0) {
+    html += '<div class="registrants-group registrants-group--waitlist">';
+    html += '<span class="registrants-label">Waitlisted (' + waitlisted.length + ')</span>';
+    html += '<div class="registrants-chips">';
+    waitlisted.forEach(function(r) {
+      html += '<span class="registrant-chip registrant-chip--waitlist">' + escapeHtml(r.name) + '</span>';
+    });
+    html += '</div></div>';
+  }
+  html += '<p class="registrants-hub-cta">Don\u2019t see a partner? <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
+  html += '</div>';
+  return html;
+}
+
+function renderRegistrantsFallback(message) {
+  var html = '<div class="registrants-list">';
+  html += '<p class="registrants-empty">' + escapeHtml(message) + '</p>';
+  html += '<p class="registrants-hub-cta">Looking for a partner? <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
+  html += '</div>';
+  return html;
 }
