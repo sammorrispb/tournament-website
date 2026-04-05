@@ -1,105 +1,108 @@
 /**
  * /api/registrants — Fetch event registrant names via the Hub
  *
- * Instead of calling CourtReserve directly (which requires duplicating
- * credentials), this proxies through the Hub's existing CourtReserve
- * integration at play.linkanddink.com/api/courtreserve.
+ * Proxies through the Hub's CourtReserve integration at
+ * play.linkanddink.com/api/courtreserve, which handles all CR auth
+ * internally and enriches registrants with Hub profile data (DUPR, etc).
  *
- * The Hub already syncs CR data and exposes it — we just consume it.
+ * Hub API format:
+ *   POST /api/courtreserve
+ *   Authorization: Bearer <supabase_jwt>
+ *   Body: { action: "getEventRegistrants", location, crEventId }
  *
- * Query params:
- *   eventId  — CourtReserve event ID
+ * Query params (from tournament site frontend):
+ *   eventId  — CourtReserve event calendar ID
  *   location — "rockville" or "northbethesda"
  */
 
 const HUB_BASE = process.env.HUB_API_BASE || "https://play.linkanddink.com";
-
-// Hub API key for server-to-server calls (optional — set in Vercel env vars)
-const HUB_API_KEY = process.env.HUB_API_KEY || "";
-
-// Location → orgId mapping (public knowledge, used in registration URLs already)
-const ORG_IDS = {
-  rockville: process.env.CR_ROCKVILLE_ORG_ID || "10869",
-  northbethesda: process.env.CR_NB_ORG_ID || "10483",
-};
-
-// Candidate action names to try against the Hub's /api/courtreserve endpoint.
-// The Hub uses an ACTION_MAP from courtreserve-ops — we try likely names
-// until one returns data, then cache which one worked.
-const ACTION_CANDIDATES = [
-  "event_registrations",
-  "event_detail",
-  "event_members",
-  "registrations",
-];
+const HUB_JWT = process.env.HUB_SUPABASE_JWT || "";
 
 /**
- * Try each action name against the Hub API.
- * Returns { data, action } on first success, or null.
+ * Fetch enriched registrants from the Hub's getEventRegistrants action.
+ * Returns Hub's enriched response or null on failure.
  */
-async function tryHubActions(eventId, orgId, headers) {
-  for (const action of ACTION_CANDIDATES) {
-    const params = new URLSearchParams({
-      action,
-      eventId,
-      organizationId: orgId,
-      location: orgId === ORG_IDS.rockville ? "rockville" : "northbethesda",
-    });
+async function fetchRegistrantsFromHub(eventId, location) {
+  const url = `${HUB_BASE}/api/courtreserve`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(HUB_JWT && { Authorization: `Bearer ${HUB_JWT}` }),
+    },
+    body: JSON.stringify({
+      action: "getEventRegistrants",
+      location,
+      crEventId: Number(eventId),
+    }),
+  });
 
-    const url = `${HUB_BASE}/api/courtreserve?${params}`;
-
-    try {
-      const res = await fetch(url, { headers });
-      if (!res.ok) continue;
-
-      const json = await res.json();
-      // Check if the response has meaningful data (not just an error)
-      const items = json?.Data || json?.data || json?.registrants || json?.Results || json;
-      if (Array.isArray(items) && items.length > 0) {
-        return { data: json, action };
-      }
-      // If it returned OK but empty array, still mark as supported
-      if (Array.isArray(items)) {
-        return { data: json, action };
-      }
-    } catch {
-      // try next action
-    }
-  }
-  return null;
+  if (!res.ok) return null;
+  const json = await res.json();
+  if (!json.ok) return null;
+  return json;
 }
 
 /**
- * Normalize whatever shape the Hub returns into a clean registrant list.
- * Privacy-friendly: first name + last initial only.
+ * Fetch waitlisted registrants via the raw CR fallthrough action.
+ * The Hub's generic handler passes any ACTION_MAP key through to CR.
  */
-function normalizeRegistrants(raw) {
-  // Handle multiple possible response shapes from the Hub
-  const list =
-    raw?.registrants ||
-    raw?.Data ||
-    raw?.data ||
-    raw?.Results ||
-    raw || [];
-  const items = Array.isArray(list) ? list : [];
-
-  return items.map((r) => {
-    // The Hub or CourtReserve may use various field names
-    const first =
-      r.firstName || r.FirstName || r.MemberFirstName || r.PlayerFirstName ||
-      r.name?.split(" ")[0] || r.Name?.split(" ")[0] || "";
-    const last =
-      r.lastName || r.LastName || r.MemberLastName || r.PlayerLastName ||
-      r.name?.split(" ").pop() || r.Name?.split(" ").pop() || "";
-    const lastInitial = last ? last.charAt(0) + "." : "";
-
-    return {
-      name: first ? `${first} ${lastInitial}`.trim() : "Registered Player",
-      isWaitlisted: !!(
-        r.isWaitlisted || r.IsWaitlisted || r.IsOnWaitlist || r.WaitlistPosition > 0
-      ),
-    };
+async function fetchWaitlistFromHub(eventId, location, startDate) {
+  const url = `${HUB_BASE}/api/courtreserve`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(HUB_JWT && { Authorization: `Bearer ${HUB_JWT}` }),
+    },
+    body: JSON.stringify({
+      action: "listWaitlistRegs",
+      location,
+      params: {
+        eventDateFrom: startDate || new Date().toISOString().slice(0, 10) + "T00:00:00",
+        eventDateTo: startDate || new Date().toISOString().slice(0, 10) + "T23:59:59",
+      },
+    }),
   });
+
+  if (!res.ok) return [];
+  const json = await res.json();
+  const list = json?.Data || json?.data || [];
+  return Array.isArray(list) ? list : [];
+}
+
+/**
+ * Convert Hub's enriched registrant into a privacy-friendly display object.
+ * Shows first name + last initial, plus DUPR rating if available.
+ */
+function formatRegistrant(r) {
+  // Use Hub name if available, fall back to CR name
+  const fullName = r.hub_name || r.cr_name || "";
+  const parts = fullName.split(" ");
+  const first = parts[0] || "";
+  const last = parts[parts.length - 1] || "";
+  const lastInitial = last && last !== first ? last.charAt(0) + "." : "";
+
+  return {
+    name: first ? `${first} ${lastInitial}`.trim() : "Registered Player",
+    dupr: r.dupr_rating || r.self_rating || null,
+    hasHubProfile: !!r.hub_player_id,
+  };
+}
+
+/**
+ * Convert raw CR waitlist entry into display object.
+ */
+function formatWaitlistEntry(r) {
+  const first = r.FirstName || "";
+  const last = r.LastName || "";
+  const lastInitial = last ? last.charAt(0) + "." : "";
+
+  return {
+    name: first ? `${first} ${lastInitial}`.trim() : "Waitlisted Player",
+    dupr: null,
+    hasHubProfile: false,
+  };
 }
 
 export default async function handler(req, res) {
@@ -107,50 +110,63 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { eventId, location } = req.query;
+  const { eventId, location, startDate } = req.query;
 
   if (!eventId || !location) {
     return res.status(400).json({ error: "eventId and location are required" });
   }
 
-  const orgId = ORG_IDS[location];
-  if (!orgId) {
+  if (!["rockville", "northbethesda"].includes(location)) {
     return res.status(400).json({ error: "Invalid location" });
   }
 
-  // Build headers for Hub API call
-  const headers = { "Content-Type": "application/json" };
-  if (HUB_API_KEY) {
-    headers["Authorization"] = `Bearer ${HUB_API_KEY}`;
+  if (!HUB_JWT) {
+    return res.status(200).json({
+      registrants: [],
+      waitlisted: [],
+      supported: false,
+      message: "Hub authentication not configured. Set HUB_SUPABASE_JWT in environment variables.",
+    });
   }
 
   try {
-    const result = await tryHubActions(eventId, orgId, headers);
+    // Fetch active registrants (enriched with Hub profiles)
+    const hubData = await fetchRegistrantsFromHub(eventId, location);
 
-    if (!result) {
+    if (!hubData) {
       return res.status(200).json({
         registrants: [],
         waitlisted: [],
         supported: false,
-        message:
-          "Registrant list not yet available. The Hub's CourtReserve integration may need a matching action configured.",
+        message: "Could not fetch registrants from the Hub. Check Hub API status and JWT.",
       });
     }
 
-    const registrants = normalizeRegistrants(result.data);
-    const registered = registrants.filter((r) => !r.isWaitlisted);
-    const waitlisted = registrants.filter((r) => r.isWaitlisted);
+    const registrants = (hubData.registrants || []).map(formatRegistrant);
+
+    // Fetch waitlisted players separately (CR uses a different endpoint)
+    let waitlisted = [];
+    try {
+      const waitlistRaw = await fetchWaitlistFromHub(eventId, location, startDate);
+      // Filter to this specific event by EventId if present
+      const filtered = waitlistRaw.filter(
+        (w) => String(w.EventId) === String(eventId) || !w.EventId
+      );
+      waitlisted = filtered.map(formatWaitlistEntry);
+    } catch {
+      // Waitlist fetch is best-effort — don't fail the whole request
+    }
 
     res.setHeader(
       "Cache-Control",
       "public, s-maxage=3600, stale-while-revalidate=1800"
     );
     return res.status(200).json({
-      registrants: registered,
+      registrants,
       waitlisted,
       supported: true,
       source: "hub",
-      actionUsed: result.action,
+      summary: hubData.summary || null,
     });
   } catch (err) {
     console.error("Registrants fetch via Hub failed:", err.message);

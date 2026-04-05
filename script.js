@@ -335,6 +335,18 @@ function renderScheduleTable(tbody, events, locationKey) {
 }
 
 // ─── Registrant rendering helpers ───
+function renderRegistrantChip(r, isWaitlisted) {
+  var cls = 'registrant-chip' + (isWaitlisted ? ' registrant-chip--waitlist' : '');
+  if (r.hasHubProfile) cls += ' registrant-chip--hub';
+  var html = '<span class="' + cls + '">';
+  html += escapeHtml(r.name);
+  if (r.dupr) {
+    html += ' <span class="registrant-dupr">' + r.dupr.toFixed(2) + '</span>';
+  }
+  html += '</span>';
+  return html;
+}
+
 function renderRegistrantsList(registered, waitlisted) {
   var html = '<div class="registrants-list">';
   if (registered.length === 0) {
@@ -344,7 +356,7 @@ function renderRegistrantsList(registered, waitlisted) {
     html += '<span class="registrants-label">Registered (' + registered.length + ')</span>';
     html += '<div class="registrants-chips">';
     registered.forEach(function(r) {
-      html += '<span class="registrant-chip">' + escapeHtml(r.name) + '</span>';
+      html += renderRegistrantChip(r, false);
     });
     html += '</div></div>';
   }
@@ -353,7 +365,7 @@ function renderRegistrantsList(registered, waitlisted) {
     html += '<span class="registrants-label">Waitlisted (' + waitlisted.length + ')</span>';
     html += '<div class="registrants-chips">';
     waitlisted.forEach(function(r) {
-      html += '<span class="registrant-chip registrant-chip--waitlist">' + escapeHtml(r.name) + '</span>';
+      html += renderRegistrantChip(r, true);
     });
     html += '</div></div>';
   }
