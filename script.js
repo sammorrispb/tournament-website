@@ -216,6 +216,35 @@ function renderScheduleTable(tbody, events) {
     }
     tr.appendChild(tdSpecial);
 
+    // Spots cell
+    var tdSpots = document.createElement('td');
+    if (dt < now) {
+      tdSpots.textContent = '\u2014';
+    } else if (e.maxRegistrants > 0) {
+      var remaining = e.maxRegistrants - e.registeredCount;
+      var spotsBadge = document.createElement('span');
+      if (remaining <= 0) {
+        spotsBadge.className = 'spots-badge spots-badge--full';
+        spotsBadge.textContent = 'Full';
+      } else if (remaining <= 4) {
+        spotsBadge.className = 'spots-badge spots-badge--low';
+        spotsBadge.textContent = remaining + ' spot' + (remaining === 1 ? '' : 's') + ' left';
+      } else {
+        spotsBadge.className = 'spots-badge';
+        spotsBadge.textContent = e.registeredCount + '/' + e.maxRegistrants + ' filled';
+      }
+      tdSpots.appendChild(spotsBadge);
+      if (e.waitlistCount > 0) {
+        var wl = document.createElement('span');
+        wl.className = 'spots-waitlist';
+        wl.textContent = e.waitlistCount + ' on waitlist';
+        tdSpots.appendChild(wl);
+      }
+    } else {
+      tdSpots.textContent = '\u2014';
+    }
+    tr.appendChild(tdSpots);
+
     // Registration cell
     var tdReg = document.createElement('td');
     if (dt < now) {

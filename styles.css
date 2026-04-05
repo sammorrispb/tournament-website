@@ -1423,6 +1423,34 @@ body.lightbox-open {
   margin-top: 0.5rem;
 }
 
+/* ─── Spots Badges ─── */
+.spots-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background: rgba(202, 243, 104, 0.15);
+  color: var(--lime);
+}
+
+.spots-badge--low {
+  background: rgba(255, 193, 7, 0.15);
+  color: #f5a623;
+}
+
+.spots-badge--full {
+  background: rgba(255, 82, 82, 0.12);
+  color: #ff5252;
+}
+
+.spots-waitlist {
+  display: block;
+  font-size: 0.7rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
 /* ─── Hub Callout ─── */
 .hub-callout {
   background: rgba(202, 243, 104, 0.1);
