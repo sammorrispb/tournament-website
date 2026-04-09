@@ -5,6 +5,8 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@notionhq/client": "^2.2.0"
+    "@notionhq/client": "^2.2.0",
+    "@vercel/blob": "^0.23.0",
+    "resend": "^3.0.0"
   }
 }
