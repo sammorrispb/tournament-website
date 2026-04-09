@@ -12,41 +12,59 @@ already in place.
 
 ---
 
-## Step 1 — Create the `results@linkanddink.com` mailbox
+## Step 1 — Create the `tournaments@linkanddink.com` mailbox
 
-The inbound flow needs a publicly addressable email that Resend can receive
-on behalf of. Two viable paths:
+Because `linkanddink.com` is on Google Workspace, we can't point the
+main domain's MX records at Resend without breaking existing mail.
+Instead we verify a subdomain (`inbound.linkanddink.com`) with Resend,
+then have Google Workspace forward `tournaments@linkanddink.com` to
+the Resend-hosted address.
 
-### Option A — Resend Inbound on a subdomain (recommended)
-
-Resend Inbound requires its own MX records, so using a subdomain
-keeps the main `linkanddink.com` mail routing untouched.
+### Part A — Verify the subdomain in Resend
 
 1. In Resend dashboard → **Domains** → **Add Domain** → enter
-   `inbound.linkanddink.com`.
-2. Resend will give you MX records to add at your DNS provider. Add them.
-3. Wait for verification to turn green (usually <5 min).
-4. In Resend → **Inbound** (or **Receiving** depending on dashboard) →
-   **Add Route** → addresses to accept: `results@inbound.linkanddink.com`.
-5. Update the staff SOP and email drafts to use
-   `results@inbound.linkanddink.com` instead of `results@linkanddink.com`
-   (or set up a forwarding alias on your main provider so the nicer
-   address still works — see Option B).
+   `inbound.linkanddink.com` and choose the **Receiving** (or Inbound)
+   purpose if Resend asks.
+2. Resend will give you MX records (plus usually a DKIM record). Copy
+   them exactly.
+3. Log into **GoDaddy** (the DNS is on `ns31/ns32.domaincontrol.com`) →
+   My Products → your `linkanddink.com` domain → **DNS** → **Add** →
+   add the MX records Resend gave you. The **Name/Host** field should
+   be `inbound` (not `@` — that would clobber your Google MX records).
+4. Wait ~5–10 minutes for propagation, then click **Verify** in Resend.
 
-### Option B — Forwarding alias on your existing mail provider
+### Part B — Create a Resend Inbound route
 
-If you already have `linkanddink.com` mail hosted somewhere (Google
-Workspace, Fastmail, etc.), create a forwarding alias:
+1. In Resend → **Inbound** (or **Receiving**) → **Add Route**.
+2. Set the route to accept mail for `catch-all@inbound.linkanddink.com`
+   (or a specific address like `hook@inbound.linkanddink.com` — doesn't
+   matter which as long as Google Workspace forwards to it).
+3. Leave the webhook URL empty for now — you'll set it in Step 4.
 
-1. In your mail provider → add an alias or group: `results@linkanddink.com`.
-2. Set the alias to forward all incoming mail to the Resend Inbound
-   address from Option A (e.g. `abc123@inbound.resend.com` or whatever
-   Resend assigns).
-3. Now staff can keep using the clean `results@linkanddink.com`
-   address and the forwarded copy hits Resend.
+### Part C — Create the Google Workspace group
 
-**Caveat:** forwarding can weaken SPF/DKIM checks. For our use case
-(low volume, strict sender allowlist enforced in code), that's fine.
+1. Google Admin console (`admin.google.com`) → **Directory** → **Groups**
+   → **Create group**.
+2. Group email: `tournaments@linkanddink.com`. Name: "Tournament Results
+   Inbox". Description: "Staff-submitted podium results. Forwards to
+   Resend for automated leaderboard updates."
+3. After creating, open the group → **Access settings** →
+   - **Who can join:** Anyone can ask (doesn't matter)
+   - **Who can post:** **Anyone on the web** (critical — staff at
+     `@dilldinkers.com` are external to `@linkanddink.com` and need to
+     be allowed to post).
+4. Group → **Members** → **Add member** → add
+   `catch-all@inbound.linkanddink.com` (or whatever address you set up
+   in Part B) as an **external member**. You may need to enable
+   "Allow external members" in the group's settings first.
+5. Send a test email from your personal account to
+   `tournaments@linkanddink.com` and confirm it's received in Resend
+   (Dashboard → Inbound → Logs, or equivalent).
+
+**If Google Workspace blocks external forwarding:** as a fallback,
+use a Gmail routing rule instead — Admin console → Apps → Google
+Workspace → Gmail → Routing → Add setting. Match recipient
+`tournaments@linkanddink.com` and forward to the Resend address.
 
 ---
 
@@ -76,13 +94,31 @@ and Development unless otherwise noted):
 
 | Name | Value | Notes |
 |---|---|---|
-| `NOTION_API_KEY` | *(existing)* | Already configured for `/api/leaderboard`. Confirm it's still present. The integration must be invited to the "Medal Points Leaderboard" DB. |
-| `NOTION_DB_MEDAL_LEADERBOARD` | `7de89f8afc7a46a291c4c14d7fb40300` | Already referenced by `/api/leaderboard`. Confirm the value matches. |
-| `INBOUND_ALLOWED_SENDERS` | comma-separated list of facility emails that can submit results | e.g. `nb-staff@dilldinkers.com,rockville-staff@dilldinkers.com`. Lowercase. |
-| `INBOUND_WEBHOOK_SECRET` | random 32+ char string | Same value you put in the Resend webhook URL's `?secret=` query param. |
-| `INBOUND_REPLY_FROM` | e.g. `results-bot@linkanddink.com` | Must be a verified sender in Resend. |
-| `RESEND_API_KEY` | your Resend API key | Used to send auto-replies to staff. |
-| `BLOB_READ_WRITE_TOKEN` | *(auto-created by Vercel Blob)* | See Step 4. |
+| `NOTION_API_KEY` | *(create, see Part A below)* | Internal integration token from a new Notion integration. Must be invited to the Medal Points Leaderboard DB. |
+| `NOTION_DB_MEDAL_LEADERBOARD` | `7de89f8afc7a46a291c4c14d7fb40300` | Database ID for the Medal Points Leaderboard. |
+| `INBOUND_ALLOWED_SENDERS` | `northbethesda@dilldinkers.com,rockville@dilldinkers.com` | Lowercase, comma-separated, no spaces. |
+| `INBOUND_WEBHOOK_SECRET` | `bab41be5d36ed003f031520ebaa3c666095c7fdc8711aa2cec240fef60979e51` | Matches the `?secret=` in the Resend webhook URL. Don't reuse elsewhere. |
+| `INBOUND_REPLY_FROM` | `tournaments-bot@linkanddink.com` | Must be a verified sender in Resend. See Part B below. |
+| `RESEND_API_KEY` | your Resend API key | Used to send auto-replies to staff. From Resend dashboard → API Keys. |
+| `BLOB_READ_WRITE_TOKEN` | *(auto-created by Vercel Blob)* | See Step 3. Vercel injects this automatically after you create the Blob store. |
+
+### Part A — Create the Notion integration (one-time)
+
+As of this session, `/api/leaderboard` returns `500 NOTION_DB_MEDAL_LEADERBOARD not configured` — neither Notion env var is set in Vercel yet. Start from scratch:
+
+1. Go to https://www.notion.so/profile/integrations → **New integration**.
+2. Name it `Link & Dink Tournament Website`. Associated workspace: the one containing the Medal Points Leaderboard DB. Type: **Internal**. Capabilities: Read content, Update content, Insert content.
+3. Copy the **Internal Integration Token** (starts with `secret_` or `ntn_`). This is your `NOTION_API_KEY`.
+4. Open the Medal Points Leaderboard database in Notion → **⋯** menu → **Connections** → **Add connections** → search for `Link & Dink Tournament Website` and invite it. This grants the integration access to the DB (Notion integrations only see DBs they've been explicitly invited to).
+
+### Part B — Verify a sending sender in Resend
+
+For auto-replies to work, the `INBOUND_REPLY_FROM` address must be a verified sender. Two paths:
+
+- If you're already verifying `inbound.linkanddink.com` for **receiving** in Step 1, also verify `linkanddink.com` itself for **sending** (separate domain entry in Resend → Domains → Add Domain → choose Sending).
+- Or verify `inbound.linkanddink.com` for both send and receive, and change `INBOUND_REPLY_FROM` to `tournaments-bot@inbound.linkanddink.com`.
+
+The first path is cleaner for the staff-facing auto-reply UX.
 
 After saving, **redeploy** the project so the new vars take effect:
 Vercel dashboard → Deployments → latest → ⋯ → Redeploy.
@@ -135,7 +171,7 @@ Once env vars are set and the deployment is live, send a real email
 from one of your allowlisted facility addresses (or temporarily add
 your own email to `INBOUND_ALLOWED_SENDERS` to test):
 
-- To: `results@linkanddink.com` (or the inbound subdomain)
+- To: `tournaments@linkanddink.com` (or the inbound subdomain)
 - Subject: `Results | 2026-04-11 | 14:30 | North Bethesda | 3.0-3.5`
 - Body:
   ```

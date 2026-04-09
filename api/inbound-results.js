@@ -9,7 +9,7 @@ const ALLOWED_SENDERS = (process.env.INBOUND_ALLOWED_SENDERS || "")
   .map((s) => s.trim().toLowerCase())
   .filter(Boolean);
 const INBOUND_SECRET = process.env.INBOUND_WEBHOOK_SECRET;
-const REPLY_FROM = process.env.INBOUND_REPLY_FROM || "results-bot@linkanddink.com";
+const REPLY_FROM = process.env.INBOUND_REPLY_FROM || "tournaments-bot@linkanddink.com";
 const RESEND_KEY = process.env.RESEND_API_KEY;
 
 // Subject: Results | 2026-04-11 | 14:30 | North Bethesda | 3.0-3.5

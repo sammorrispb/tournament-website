@@ -3,7 +3,7 @@
 **Audience:** North Bethesda & Rockville facility staff running Link & Dink tournaments.
 **When:** Within 30 minutes of the final match ending, before you leave the venue.
 **Where from:** Your facility's official email address (the one on our allowlist).
-**Where to:** `results@linkanddink.com`
+**Where to:** `tournaments@linkanddink.com`
 
 ---
 
@@ -87,7 +87,7 @@ Don't touch the leaderboard or results page yourself — this email is the only 
 > **After the final match:**
 >
 > 1. Podium photo (landscape, one shot).
-> 2. New email to `results@linkanddink.com` from the facility address.
+> 2. New email to `tournaments@linkanddink.com` from the facility address.
 > 3. Subject: `Results | YYYY-MM-DD | HH:MM | Location | Bracket`
 > 4. Body: `1st:`, `2nd:`, `3rd:` lines + `Teams registered:` + `Notes:`
 > 5. Attach the photo.
