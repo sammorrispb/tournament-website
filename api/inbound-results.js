@@ -20,6 +20,7 @@ const TEAMS_RE = /^Teams registered\s*:\s*(\d+)\s*$/i;
 const NOTES_RE = /^Notes\s*:\s*(.*)$/i;
 
 const MEDAL_BY_PLACE = { "1st": "Gold", "2nd": "Silver", "3rd": "Bronze" };
+const POINTS_BY_PLACE = { "1st": "3", "2nd": "2", "3rd": "1" };
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -93,29 +94,35 @@ export default async function handler(req, res) {
     }
   }
 
-  // 5. Write to Notion (one row per player per medal)
+  // 5. Write to Notion (one row per player per medal). Property names and
+  //    types match the existing "Medal Points Leaderboard" database.
   const notion = new NotionClient({ auth: NOTION_KEY });
   const createdRows = [];
+  const bracketOption = normalizeBracketForSelect(bracket);
   try {
     for (const place of ["1st", "2nd", "3rd"]) {
       const players = splitPartners(places[place]);
       if (players.length === 0) continue;
       for (const player of players) {
         const partner = players.filter((p) => p !== player).join(" & ");
+        const pageProps = {
+          "Player Name": titleProp(player),
+          "Result": selectProp(MEDAL_BY_PLACE[place]),
+          "Points This Event": richTextProp(POINTS_BY_PLACE[place]),
+          "Tournament Date": dateProp(date),
+          "Time": richTextProp(time),
+          "Location": selectProp(location),
+          "Bracket / Level": selectProp(bracketOption),
+          "Partner Name": richTextProp(partner),
+          "Source Email": richTextProp(from),
+          "Notes": richTextProp(notes),
+        };
+        if (photoUrl) {
+          pageProps["Winner Photo"] = filesProp(photoUrl, `podium-${date}.${extFor(photo?.contentType || "image/jpeg")}`);
+        }
         const page = await notion.pages.create({
           parent: { database_id: NOTION_DB },
-          properties: {
-            "Player Name": titleProp(player),
-            "Result": selectProp(MEDAL_BY_PLACE[place]),
-            "Date": richTextProp(date),
-            "Time": richTextProp(time),
-            "Location": selectProp(location),
-            "Bracket": richTextProp(bracket),
-            "Partner": richTextProp(partner),
-            "Photo": photoUrl ? urlProp(photoUrl) : undefined,
-            "Source Email": richTextProp(from),
-            "Notes": richTextProp(notes),
-          },
+          properties: pageProps,
         });
         createdRows.push(page.id);
       }
@@ -204,7 +211,17 @@ function extFor(ct) {
 const titleProp = (text) => ({ title: [{ text: { content: text } }] });
 const richTextProp = (text) => ({ rich_text: [{ text: { content: text || "" } }] });
 const selectProp = (name) => ({ select: { name } });
-const urlProp = (href) => ({ url: href });
+const dateProp = (iso) => ({ date: { start: iso } });
+const filesProp = (href, name) => ({
+  files: [{ type: "external", name, external: { url: href } }],
+});
+
+// The Notion "Bracket / Level" select options don't include the apostrophe
+// in "Women's Only" (DDL parsing constraint). Staff can still write "Women's"
+// naturally in the email — we normalize before lookup.
+function normalizeBracketForSelect(bracket) {
+  return bracket.replace(/Women'?s/gi, "Womens");
+}
 
 async function reject(res, from, subject, reason) {
   await sendAutoReply({
