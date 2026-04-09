@@ -30,7 +30,37 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const email = normalizePayload(req.body || {});
+  // Resend Inbound uses a two-step flow: the webhook fires with a
+  // minimal `{ type: "email.received", data: { from, email_id } }`
+  // payload, then we have to call GET /emails/receiving/{email_id}
+  // to pull the full body + attachments. For local tests (and for
+  // other providers that send inline payloads) we fall back to
+  // parsing req.body directly.
+  const webhookBody = req.body || {};
+  let email;
+  if (
+    webhookBody?.type === "email.received" &&
+    webhookBody?.data?.email_id &&
+    RESEND_KEY
+  ) {
+    try {
+      const full = await fetchResendInboundEmail(webhookBody.data.email_id);
+      email = normalizePayload(full);
+      // Preserve the `from` the webhook told us about, in case the
+      // full-email response nests it differently.
+      if (!email.from && webhookBody.data.from) {
+        email.from = String(webhookBody.data.from).toLowerCase();
+      }
+    } catch (err) {
+      console.error("Failed to fetch inbound email from Resend:", err.message);
+      return res.status(500).json({
+        status: "error",
+        reason: `Could not fetch email body from Resend: ${err.message}`,
+      });
+    }
+  } else {
+    email = normalizePayload(webhookBody);
+  }
   const { from, subject, textBody, attachments } = email;
 
   // 1. Sender allowlist
@@ -150,12 +180,31 @@ export default async function handler(req, res) {
   return res.status(200).json({ status: "accepted", rows: createdRows.length, photoUrl });
 }
 
+// ───────── Resend Inbound fetcher ─────────
+
+// Fetch a received email's full content from the Resend API. The SDK
+// may or may not expose this via resend.emails.receiving.get() depending
+// on the version — using raw fetch here keeps the code version-agnostic.
+async function fetchResendInboundEmail(emailId) {
+  const url = `https://api.resend.com/emails/receiving/${emailId}`;
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${RESEND_KEY}` },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Resend API ${res.status}: ${text.slice(0, 300)}`);
+  }
+  const payload = await res.json();
+  return payload?.data || payload;
+}
+
 // ───────── payload adapter ─────────
 
-// Normalize inbound webhook payload to { from, subject, textBody, attachments }.
-// Written for Resend Inbound — verify field names against the current docs
-// when wiring up the webhook. The shape below handles both a top-level object
-// and a { type, data: { ... } } wrapper.
+// Normalize a raw email payload to { from, subject, textBody, attachments }.
+// Handles three shapes:
+//   (a) inline Postmark-style body (for the test script)
+//   (b) Resend received-email full response from /emails/receiving/{id}
+//   (c) Resend webhook body itself (rare fallback; usually only has email_id)
 function normalizePayload(body) {
   const d = body?.data || body;
   const fromField = d.from;
