@@ -565,7 +565,7 @@
     body.appendChild(text);
 
     var link = document.createElement("a");
-    link.href = "https://linkanddink.com";
+    link.href = "https://linkanddink.com?utm_source=tournaments&utm_medium=website&utm_campaign=cross_site";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.className = "btn btn--secondary btn--small";
@@ -629,7 +629,7 @@
     linkWrap.style.flexWrap = "wrap";
 
     var hubLink = document.createElement("a");
-    hubLink.href = "https://linkanddink.com";
+    hubLink.href = "https://linkanddink.com?utm_source=tournaments&utm_medium=website&utm_campaign=cross_site";
     hubLink.target = "_blank";
     hubLink.rel = "noopener noreferrer";
     hubLink.className = "btn btn--primary btn--small";
