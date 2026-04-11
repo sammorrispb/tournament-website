@@ -2,7 +2,7 @@
  * /api/partner-seek — Submit a "looking for partner" request
  *
  * Proxies through the Hub's partner inquiry system at
- * play.linkanddink.com/api/partner-inquiry with mode "submit_partner_request".
+ * linkanddink.com/api/partner-inquiry with mode "submit_partner_request".
  *
  * POST body:
  *   name      — Player's first name (required)
@@ -15,7 +15,7 @@
  *   message   — Short note (optional, max 200 chars)
  */
 
-const HUB_BASE = process.env.HUB_API_BASE || "https://play.linkanddink.com";
+const HUB_BASE = process.env.HUB_API_BASE || "https://linkanddink.com";
 const HUB_JWT = process.env.HUB_SUPABASE_JWT || "";
 
 export default async function handler(req, res) {

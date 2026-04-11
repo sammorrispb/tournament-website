@@ -236,9 +236,9 @@ Also detect specialty events for "Also For You" section by checking event names 
 Build results DOM using safe methods (createElement/textContent, same pattern as the existing dynamic leaderboard in script.js). Five sections:
 1. Your Bracket (green border)
 2. Recommended Events (purple border) — from /api/events, filtered
-3. Need a Partner? (blue border) — link to play.linkanddink.com
+3. Need a Partner? (blue border) — link to linkanddink.com
 4. Also For You (pink border) — specialty events matching social fit
-5. Join the Community (yellow border) — link to play.linkanddink.com + player guide
+5. Join the Community (yellow border) — link to linkanddink.com + player guide
 
 Each event in sections 2 and 4 gets a Register button linking to its `registrationUrl`.
 
@@ -259,7 +259,7 @@ function submitLead() {
     completedSteps: state.completedSteps,
   };
 
-  fetch("https://play.linkanddink.com/api/tournament-lead", {
+  fetch("https://linkanddink.com/api/tournament-lead", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -436,7 +436,7 @@ Wait for Vercel auto-deploy. Add `tournamentwebsite.vercel.app` to `ALLOWED_ORIG
 - [ ] **Step 3: Test cross-origin lead submission**
 
 From the tournament site (localhost:3000/play), complete the quiz with a test email. Verify:
-- POST to play.linkanddink.com/api/tournament-lead succeeds (check Network tab)
+- POST to linkanddink.com/api/tournament-lead succeeds (check Network tab)
 - Profile appears in Supabase profiles table
 - Digest queue item created with section_type "tournament_welcome"
 - Results page shows correctly regardless of API response timing

@@ -442,7 +442,7 @@
       completedSteps: state.completedSteps,
     };
 
-    fetch("https://play.linkanddink.com/api/tournament-lead", {
+    fetch("https://linkanddink.com/api/tournament-lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -565,7 +565,7 @@
     body.appendChild(text);
 
     var link = document.createElement("a");
-    link.href = "https://play.linkanddink.com";
+    link.href = "https://linkanddink.com";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.className = "btn btn--secondary btn--small";
@@ -629,7 +629,7 @@
     linkWrap.style.flexWrap = "wrap";
 
     var hubLink = document.createElement("a");
-    hubLink.href = "https://play.linkanddink.com";
+    hubLink.href = "https://linkanddink.com";
     hubLink.target = "_blank";
     hubLink.rel = "noopener noreferrer";
     hubLink.className = "btn btn--primary btn--small";

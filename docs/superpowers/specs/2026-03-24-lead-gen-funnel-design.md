@@ -62,7 +62,7 @@ From Step 4 motivations:
 
 Tournament Site /play collects quiz answers + name + email.
 
-POST to play.linkanddink.com/api/tournament-lead sends the lead to the Hub.
+POST to linkanddink.com/api/tournament-lead sends the lead to the Hub.
 
 The Hub API:
 1. Upserts profile in Supabase (email as join key)
@@ -91,7 +91,7 @@ Results page fetches live events from the tournament site's existing /api/events
 
 ## API Contract
 
-### POST play.linkanddink.com/api/tournament-lead
+### POST linkanddink.com/api/tournament-lead
 
 Request body:
 
@@ -141,9 +141,9 @@ Four sections, each with a colored left border:
 
 1. Your Bracket (green): 3.5-4.0 with brief explanation
 2. Recommended Events (purple): 2-3 upcoming tournaments at preferred location from /api/events with Register buttons
-3. Need a Partner? (blue): "Don't have a doubles partner? We can help match you." Links to play.linkanddink.com partner request flow
+3. Need a Partner? (blue): "Don't have a doubles partner? We can help match you." Links to linkanddink.com partner request flow
 4. Also For You (pink): Specialty events matching social fit (Womens, Mixed, Seniors)
-5. Join the Community (yellow): CTA to play.linkanddink.com (Hub) + player guide link
+5. Join the Community (yellow): CTA to linkanddink.com (Hub) + player guide link
 
 ### Styles
 

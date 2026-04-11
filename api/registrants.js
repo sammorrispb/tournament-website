@@ -2,7 +2,7 @@
  * /api/registrants — Fetch event registrant names via the Hub
  *
  * Proxies through the Hub's CourtReserve integration at
- * play.linkanddink.com/api/courtreserve, which handles all CR auth
+ * linkanddink.com/api/courtreserve, which handles all CR auth
  * internally and enriches registrants with Hub profile data (DUPR, etc).
  *
  * Hub API format:
@@ -15,7 +15,7 @@
  *   location — "rockville" or "northbethesda"
  */
 
-const HUB_BASE = process.env.HUB_API_BASE || "https://play.linkanddink.com";
+const HUB_BASE = process.env.HUB_API_BASE || "https://linkanddink.com";
 const HUB_JWT = process.env.HUB_SUPABASE_JWT || "";
 
 /**

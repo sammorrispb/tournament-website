@@ -2,7 +2,7 @@
  * /api/partner-seekers — List players seeking partners for events
  *
  * Proxies through the Hub's partner-seekers endpoint at
- * play.linkanddink.com/api/partner-seekers.
+ * linkanddink.com/api/partner-seekers.
  *
  * Query params:
  *   location  — "rockville" or "northbethesda" (required)
@@ -10,7 +10,7 @@
  *   bracket   — e.g. "3.0-3.5" (optional)
  */
 
-const HUB_BASE = process.env.HUB_API_BASE || "https://play.linkanddink.com";
+const HUB_BASE = process.env.HUB_API_BASE || "https://linkanddink.com";
 const HUB_JWT = process.env.HUB_SUPABASE_JWT || "";
 
 export default async function handler(req, res) {

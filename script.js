@@ -414,7 +414,7 @@ function renderRegistrantsList(registered, waitlisted) {
     });
     html += '</div></div>';
   }
-  html += '<p class="registrants-hub-cta">Don\u2019t see a partner? <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
+  html += '<p class="registrants-hub-cta">Don\u2019t see a partner? <a href="https://linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
   html += '</div>';
   return html;
 }
@@ -422,7 +422,7 @@ function renderRegistrantsList(registered, waitlisted) {
 function renderRegistrantsFallback(message) {
   var html = '<div class="registrants-list">';
   html += '<p class="registrants-empty">' + escapeHtml(message) + '</p>';
-  html += '<p class="registrants-hub-cta">Looking for a partner? <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
+  html += '<p class="registrants-hub-cta">Looking for a partner? <a href="https://linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
   html += '</div>';
   return html;
 }
@@ -477,7 +477,7 @@ function loadPartnerSeekers(container, eventId, location) {
       wireConnectButtons(container);
     })
     .catch(function() {
-      container.innerHTML = '<p class="partner-seekers__empty">Partner matching coming soon. <a href="https://play.linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
+      container.innerHTML = '<p class="partner-seekers__empty">Partner matching coming soon. <a href="https://linkanddink.com" target="_blank" rel="noopener noreferrer">Find one on the Hub \u2192</a></p>';
     });
 }
 
