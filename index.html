@@ -62,25 +62,118 @@
     <div class="winners-banner__cards">
       <div class="winners-banner__card">
         <h3>Brett Guterman</h3>
-        <p class="winners-banner__points">7 Points</p>
-        <div class="winners-banner__medals">
-          <span class="medal medal--gold">2</span>
-          <span class="medal medal--bronze">1</span>
-        </div>
       </div>
       <div class="winners-banner__card">
         <h3>Allie Espina</h3>
-        <p class="winners-banner__points">7 Points</p>
-        <div class="winners-banner__medals">
-          <span class="medal medal--gold">1</span>
-          <span class="medal medal--silver">2</span>
-        </div>
       </div>
     </div>
     <p class="winners-banner__detail">Each earned <strong>$100 Dill Dinkers court credit</strong> for finishing atop the Winter 2026 leaderboard (January &ndash; March 2026).</p>
     <a href="winter-2026.html" class="btn btn--primary btn--small">View Winter Results &rarr;</a>
   </div>
 </div>
+
+<!-- ════════════════ SPRING PRIZE BANNER ════════════════ -->
+<div class="prize-banner">
+  <div class="container">
+    <p class="prize-banner__headline">Spring Champion &mdash; $200 Court Credit + Your Name on the Wall</p>
+    <p class="prize-banner__detail">Climb the leaderboard across 20 tournaments. The player with the most medal points at the end of the Spring season takes the crown, the $200 Dill Dinkers court credit, and permanent bragging rights. 20 tournaments. 10 weekends. One champion.</p>
+  </div>
+</div>
+
+<!-- ════════════════ LEADERBOARD ════════════════ -->
+<section id="leaderboard" class="section section--alt">
+  <div class="container">
+    <h2 class="reveal">Spring 2026 Medal Leaderboard</h2>
+    <div class="leaderboard__badges">
+      <span class="badge badge--gold">Gold = 3 pts</span>
+      <span class="badge badge--silver">Silver = 2 pts</span>
+      <span class="badge badge--bronze">Bronze = 1 pt</span>
+    </div>
+    <div class="leaderboard__table-wrap reveal" id="leaderboard-wrap">
+      <table class="leaderboard__table">
+        <thead>
+          <tr>
+            <th class="leaderboard__th-rank">#</th>
+            <th class="leaderboard__th-name">Player</th>
+            <th class="leaderboard__th-medals">Medals</th>
+            <th class="leaderboard__th-pts">Pts</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <tr><td>1</td><td>Jon Fisher</td><td><span class="medal medal--gold">&nbsp;</span></td><td>3</td></tr>
+          <tr><td>1</td><td>Jonathan Fisher-Espinoza</td><td><span class="medal medal--gold">&nbsp;</span></td><td>3</td></tr>
+          <tr><td>3</td><td>Jordan Badler</td><td><span class="medal medal--silver">&nbsp;</span></td><td>2</td></tr>
+          <tr><td>3</td><td>Brandon Chu</td><td><span class="medal medal--silver">&nbsp;</span></td><td>2</td></tr>
+          <tr><td>5</td><td>Federico Basanes</td><td><span class="medal medal--bronze">&nbsp;</span></td><td>1</td></tr>
+          <tr><td>5</td><td>Marcelo Carbrol</td><td><span class="medal medal--bronze">&nbsp;</span></td><td>1</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ GALLERY ════════════════ -->
+<section id="gallery" class="section">
+  <div class="container">
+    <h2 class="reveal">Our Champions</h2>
+    <div class="carousel reveal" id="galleryCarousel">
+      <button class="carousel__arrow carousel__arrow--prev" aria-label="Previous photo">&#10094;</button>
+      <div class="carousel__track">
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-08.jpeg" alt="Apr 12 Rockville 3.5-4.0 podium: Jon Fisher &amp; Jonathan Fisher-Espinoza (gold), Jordan Badler &amp; Brandon Chu (silver), Federico Basanes &amp; Marcelo Carbrol (bronze)">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-01.jpeg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-02.jpeg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-03.jpeg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-04.jpeg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-05.jpg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-06.jpg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+        <div class="carousel__slide">
+          <div class="carousel__img-wrap">
+            <img src="assets/tournament-photos/winners-07.jpg" alt="Tournament winners on the podium">
+          </div>
+        </div>
+
+      </div>
+      <button class="carousel__arrow carousel__arrow--next" aria-label="Next photo">&#10095;</button>
+      <div class="carousel__dots" id="carouselDots"></div>
+    </div>
+  </div>
+</section>
 
 <!-- ════════════════ 3. ABOUT ════════════════ -->
 <section id="about" class="section">
@@ -198,22 +291,13 @@
             <th>Date</th>
             <th>Bracket</th>
             <th>Special Format</th>
-            <th>Spots</th>
             <th>Register</th>
           </tr>
         </thead>
         <tbody id="nb-schedule-body">
           <tr>
-            <td>Sat, Apr 11 &middot; 2:30 PM</td>
-            <td>3.0&ndash;3.5</td>
-            <td><span class="badge badge--special">Cancelled</span></td>
-            <td>&mdash;</td>
-            <td>&mdash;</td>
-          </tr>
-          <tr>
-            <td>Sat, Apr 18 &middot; 7:00 PM</td>
+            <td>Sat, Apr 18 &middot; 2:30 PM</td>
             <td>3.5&ndash;4.0</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912412" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -221,13 +305,11 @@
             <td>Sat, Apr 25 &middot; 2:30 PM</td>
             <td>3.0&ndash;3.5</td>
             <td>&mdash;</td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912407" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sat, May 2 &middot; 5:00 PM</td>
             <td>4.0&ndash;4.5</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912423" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -235,13 +317,11 @@
             <td>Sat, May 9 &middot; 3:00 PM</td>
             <td>3.0&ndash;3.5</td>
             <td><span class="badge badge--special">Women&rsquo;s Only</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912427" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sat, May 16 &middot; 4:00 PM</td>
             <td>3.5&ndash;4.0</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912434" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -249,20 +329,17 @@
             <td>Sat, May 23 &middot; 2:30 PM</td>
             <td>3.0&ndash;3.5</td>
             <td>&mdash;</td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912407" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sat, May 30 &middot; 2:30 PM</td>
             <td>3.5&ndash;4.0</td>
             <td><span class="badge badge--special">50+ Seniors</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912438" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sat, Jun 6 &middot; 2:30 PM</td>
             <td>4.0&ndash;4.5</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912440" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -270,7 +347,6 @@
             <td>Sat, Jun 13 &middot; 2:30 PM</td>
             <td>3.5&ndash;4.0</td>
             <td><span class="badge badge--special">Mixed Gender</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10483/1912442" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
         </tbody>
@@ -290,7 +366,6 @@
             <th>Date</th>
             <th>Bracket</th>
             <th>Special Format</th>
-            <th>Spots</th>
             <th>Register</th>
           </tr>
         </thead>
@@ -299,13 +374,11 @@
             <td>Sun, Apr 19 &middot; 4:00 PM</td>
             <td>3.0&ndash;3.5</td>
             <td>&mdash;</td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913611" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sun, Apr 26 &middot; 4:00 PM</td>
             <td>3.5&ndash;4.0</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913620" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -313,13 +386,11 @@
             <td>Sun, May 3 &middot; 4:00 PM</td>
             <td>3.0&ndash;3.5</td>
             <td><span class="badge badge--special">14 &amp; Under Juniors</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913614" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sun, May 10 &middot; 4:00 PM</td>
             <td>4.0&ndash;4.5</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913627" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -327,20 +398,17 @@
             <td>Sun, May 17 &middot; 4:00 PM</td>
             <td>3.0&ndash;3.5</td>
             <td>&mdash;</td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913611" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sun, May 24 &middot; 4:00 PM</td>
             <td>3.5&ndash;4.0</td>
             <td><span class="badge badge--special">Women&rsquo;s Only</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913632" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sun, May 31 &middot; 4:00 PM</td>
             <td>3.0&ndash;3.5</td>
-            <td>&mdash;</td>
             <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913611" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
@@ -348,14 +416,12 @@
             <td>Sun, Jun 7 &middot; 4:00 PM</td>
             <td>3.5&ndash;4.0</td>
             <td><span class="badge badge--special">Mixed Gender</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913633" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
           <tr>
             <td>Sun, Jun 14 &middot; 4:00 PM</td>
             <td>3.0&ndash;3.5</td>
             <td><span class="badge badge--special">50+ Seniors</span></td>
-            <td>&mdash;</td>
             <td><a href="https://app.courtreserve.com/Online/Events/Public/10869/1913634" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--small">Register</a></td>
           </tr>
         </tbody>
@@ -377,46 +443,6 @@
   </div>
 </section>
 
-<!-- ════════════════ SPRING PRIZE BANNER ════════════════ -->
-<div class="prize-banner">
-  <div class="container">
-    <p class="prize-banner__headline">Spring Champion &mdash; $200 Court Credit + Your Name on the Wall</p>
-    <p class="prize-banner__detail">Climb the leaderboard across 20 tournaments. The player with the most medal points at the end of the Spring season takes the crown, the $200 Dill Dinkers court credit, and permanent bragging rights. 20 tournaments. 10 weekends. One champion.</p>
-  </div>
-</div>
-
-<!-- ════════════════ 6. LEADERBOARD ════════════════ -->
-<section id="leaderboard" class="section section--alt">
-  <div class="container">
-    <h2 class="reveal">Spring 2026 Medal Leaderboard</h2>
-    <div class="leaderboard__badges">
-      <span class="badge badge--gold">Gold = 3 pts</span>
-      <span class="badge badge--silver">Silver = 2 pts</span>
-      <span class="badge badge--bronze">Bronze = 1 pt</span>
-    </div>
-    <div class="leaderboard__table-wrap reveal" id="leaderboard-wrap">
-      <table class="leaderboard__table">
-        <thead>
-          <tr>
-            <th class="leaderboard__th-rank">#</th>
-            <th class="leaderboard__th-name">Player</th>
-            <th class="leaderboard__th-medals">Medals</th>
-            <th class="leaderboard__th-pts">Pts</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-          <tr><td>1</td><td>Jon Fisher</td><td><span class="medal medal--gold">&nbsp;</span></td><td>3</td></tr>
-          <tr><td>1</td><td>Jonathan Fisher-Espinoza</td><td><span class="medal medal--gold">&nbsp;</span></td><td>3</td></tr>
-          <tr><td>3</td><td>Jordan Badler</td><td><span class="medal medal--silver">&nbsp;</span></td><td>2</td></tr>
-          <tr><td>3</td><td>Brandon Chu</td><td><span class="medal medal--silver">&nbsp;</span></td><td>2</td></tr>
-          <tr><td>5</td><td>Federico Basanes</td><td><span class="medal medal--bronze">&nbsp;</span></td><td>1</td></tr>
-          <tr><td>5</td><td>Marcelo Carbrol</td><td><span class="medal medal--bronze">&nbsp;</span></td><td>1</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
 <!-- ════════════════ TOURNAMENT RESULTS ════════════════ -->
 <section id="results" class="section">
   <div class="container">
@@ -433,69 +459,6 @@
           </div>
         </div>
       </details>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════ 7. GALLERY ════════════════ -->
-<section id="gallery" class="section section--alt">
-  <div class="container">
-    <h2 class="reveal">Our Champions</h2>
-    <div class="carousel reveal" id="galleryCarousel">
-      <button class="carousel__arrow carousel__arrow--prev" aria-label="Previous photo">&#10094;</button>
-      <div class="carousel__track">
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-01.jpeg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-02.jpeg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-03.jpeg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-04.jpeg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-05.jpg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-06.jpg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-07.jpg" alt="Tournament winners on the podium">
-          </div>
-        </div>
-
-        <div class="carousel__slide">
-          <div class="carousel__img-wrap">
-            <img src="assets/tournament-photos/winners-08.jpeg" alt="Apr 12 Rockville 3.5-4.0 podium: Jon Fisher &amp; Jonathan Fisher-Espinoza (gold), Jordan Badler &amp; Brandon Chu (silver), Federico Basanes &amp; Marcelo Carbrol (bronze)">
-          </div>
-        </div>
-
-      </div>
-      <button class="carousel__arrow carousel__arrow--next" aria-label="Next photo">&#10095;</button>
-      <div class="carousel__dots" id="carouselDots"></div>
     </div>
   </div>
 </section>
