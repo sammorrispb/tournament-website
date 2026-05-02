@@ -64,17 +64,6 @@
   // ═══════════════════════════════════════════════
 
   function goToStep(stepId) {
-    // UPJ Phase 2: fire quiz_started once on the first advance past step 1.
-    // Uses state.completedSteps as the idempotency guard — it's 0 until this
-    // call bumps it. After first run, LDFunnel.trackEvent is a no-op cost.
-    if (state.completedSteps === 0) {
-      try {
-        if (window.LDFunnel && typeof window.LDFunnel.trackEvent === "function") {
-          window.LDFunnel.trackEvent("tournament_quiz_started", { first_step: stepId });
-        }
-      } catch (e) { /* non-fatal */ }
-    }
-
     // Hide current step
     var current = document.querySelector(".step--active");
     if (current) current.classList.remove("step--active");
@@ -440,23 +429,9 @@
   // ═══════════════════════════════════════════════
 
   function submitLead() {
-    // UPJ Phase 2: forward visitor_id + marketing_ref so tournament-lead
-    // server can link this signup into profile_visitor_links.
-    var visitorId = null;
-    var marketingRef = null;
-    try {
-      if (window.LDFunnel && typeof window.LDFunnel.getOrCreateVisitorId === "function") {
-        visitorId = window.LDFunnel.getOrCreateVisitorId();
-      }
-      marketingRef = (function () {
-        try {
-          var url = new URL(window.location.href);
-          return url.searchParams.get("ref") || url.searchParams.get("utm_source")
-            || localStorage.getItem("ld_acquisition_source") || null;
-        } catch (e) { return null; }
-      })();
-    } catch (e) { /* non-fatal */ }
-
+    // 2026-05-02: Hub lead-capture endpoint is offline. Quiz submissions
+    // are stashed in localStorage so Sam can recover them manually if
+    // needed; the user still sees the bracket recommendation + events.
     var payload = {
       name: state.answers.name,
       email: state.answers.email,
@@ -468,35 +443,20 @@
       isVeteran: state.isVeteran,
       source: "tournament-funnel",
       completedSteps: state.completedSteps,
-      visitor_id: visitorId,
-      marketing_ref: marketingRef,
+      submittedAt: new Date().toISOString(),
     };
 
-    // Fire UPJ funnel event alongside the lead submit so the quiz action
-    // shows up in funnel_events_external with site_id=tournaments.
     try {
-      if (window.LDFunnel && typeof window.LDFunnel.trackEvent === "function") {
-        window.LDFunnel.trackEvent("tournament_quiz_submitted", {
-          bracket: state.answers.bracket,
-          isVeteran: state.isVeteran,
-          completedSteps: state.completedSteps,
-        });
-      }
-    } catch (e) { /* never block submission */ }
-
-    fetch("https://linkanddink.com/api/tournament-lead", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(function () {
-      // Graceful degradation — show results anyway
-      // Store in localStorage as backup
+      console.log("[tournament-quiz] lead captured (local-only):", payload);
+      var existing = [];
       try {
-        localStorage.setItem("tournament_lead_backup", JSON.stringify(payload));
-      } catch (e) {
-        /* ignore */
-      }
-    });
+        var raw = localStorage.getItem("tournament_lead_backup");
+        if (raw) existing = JSON.parse(raw);
+        if (!Array.isArray(existing)) existing = [existing];
+      } catch (_) { existing = []; }
+      existing.push(payload);
+      localStorage.setItem("tournament_lead_backup", JSON.stringify(existing));
+    } catch (_) { /* localStorage blocked — ignore */ }
   }
 
   // ═══════════════════════════════════════════════
@@ -603,17 +563,15 @@
     body.className = "result-card__body";
 
     var text = document.createElement("p");
-    text.textContent = "Don\u2019t have a doubles partner? We can help match you with someone at your level.";
+    text.textContent = "Don\u2019t have a doubles partner? Ask in your local pickleball community, or email us and we\u2019ll help connect you with players at your level.";
     body.appendChild(text);
 
     var link = document.createElement("a");
-    link.href = "https://linkanddink.com?utm_source=tournaments&utm_medium=website&utm_campaign=cross_site";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
+    link.href = "mailto:tournaments@sammorrispb.com";
     link.className = "btn btn--secondary btn--small";
     link.style.marginTop = "0.75rem";
     link.style.display = "inline-block";
-    link.textContent = "Find a Partner";
+    link.textContent = "Email the Tournament Director";
     body.appendChild(link);
 
     card.appendChild(body);
@@ -654,14 +612,14 @@
 
     var title = document.createElement("div");
     title.className = "result-card__title";
-    title.textContent = "Join the Community";
+    title.textContent = "Get Ready";
     card.appendChild(title);
 
     var body = document.createElement("div");
     body.className = "result-card__body";
 
     var text = document.createElement("p");
-    text.textContent = "Connect with other players, get event updates, and become part of the Link & Dink community.";
+    text.textContent = "Read the Player Guide before your first event so you know what to expect on tournament day.";
     body.appendChild(text);
 
     var linkWrap = document.createElement("div");
@@ -670,17 +628,9 @@
     linkWrap.style.gap = "0.75rem";
     linkWrap.style.flexWrap = "wrap";
 
-    var hubLink = document.createElement("a");
-    hubLink.href = "https://linkanddink.com?utm_source=tournaments&utm_medium=website&utm_campaign=cross_site";
-    hubLink.target = "_blank";
-    hubLink.rel = "noopener noreferrer";
-    hubLink.className = "btn btn--primary btn--small";
-    hubLink.textContent = "The Hub";
-    linkWrap.appendChild(hubLink);
-
     var guideLink = document.createElement("a");
     guideLink.href = "player-guide.html";
-    guideLink.className = "btn btn--secondary btn--small";
+    guideLink.className = "btn btn--primary btn--small";
     guideLink.textContent = "Player Guide";
     linkWrap.appendChild(guideLink);
 
@@ -693,25 +643,11 @@
   // Event Fetching & Filtering
   // ═══════════════════════════════════════════════
 
-  var cachedEventData = null;
-
+  // 2026-05-02: /api/events removed when CR coupling was stripped.
+  // Live event data is no longer fetched here; callers handle null and
+  // fall back to the static schedule on index.html.
   function fetchEventData(callback) {
-    if (cachedEventData) {
-      callback(cachedEventData);
-      return;
-    }
-    fetch("/api/events")
-      .then(function (res) {
-        if (!res.ok) throw new Error("Failed to fetch events");
-        return res.json();
-      })
-      .then(function (data) {
-        cachedEventData = data;
-        callback(data);
-      })
-      .catch(function () {
-        callback(null);
-      });
+    callback(null);
   }
 
   function filterEvents(locations, bracket, locationPref) {
