@@ -2,7 +2,7 @@
 
 # tournament-website
 
-Static, vanilla-JS marketing + lead-capture site for Sam Morris's Link & Dink tournament series. Deploys to Vercel as a static site (no build step) plus a couple of lightweight serverless functions in `api/`.
+Static, vanilla-JS marketing + lead-capture site for Sam Morris's tournament series. Deploys to Vercel as a static site (no build step) plus a couple of lightweight serverless functions in `api/`.
 
 ## Stack
 
